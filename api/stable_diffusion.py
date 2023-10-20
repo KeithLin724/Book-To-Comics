@@ -13,6 +13,7 @@ class TextToImage:
 
         self.model_id = "stabilityai/stable-diffusion-2"
 
+    def load(self):
         self.scheduler = EulerDiscreteScheduler.from_pretrained(
             self.model_id,
             subfolder="scheduler",

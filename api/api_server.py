@@ -1,14 +1,26 @@
-from flask import Flask, send_file, request
+from flask import Flask, send_file, request, jsonify
+from flask_cors import CORS
 from stable_diffusion import TextToImage
-
+import g4f
 import os
+from multiprocessing import Process
 
 app = Flask(__name__)
+
+PORT_g4f = 1337
+
 model = TextToImage()
 
 FOLDER_PATH = "./tmp"
-if not os.path.exists(FOLDER_PATH):
-    os.makedirs(FOLDER_PATH)
+
+
+def init():
+    g4f.logging = True  # enable logging
+    g4f.check_version = False  # Disable automatic version checking
+    print(g4f.version)  # check version
+    print(g4f.Provider.Ails.params)  # supported args
+    if not os.path.exists(FOLDER_PATH):
+        os.makedirs(FOLDER_PATH)
 
 
 @app.route("/")
@@ -16,12 +28,26 @@ def hello():
     return "Hello, World!"
 
 
-@app.route("/test", methods=["GET"])
+@app.route("/test")
 def testing():
-    name = request.headers.get("name")
-    print(name)
+    web_URL = f"http://{request.remote_addr}:{PORT_g4f}"
+    return f"testing, IP :{web_URL}"
 
-    return f"testing, {name}"
+
+@app.route("/chat", methods=["GET"])
+def chat_to_ai():
+    model = request.headers.get("model", "gpt-3.5-turbo")
+    message = request.headers.get("message")
+
+    return g4f.ChatCompletion.create(
+        model=model,
+        messages=[
+            {
+                "role": "user",
+                "content": message,
+            }
+        ],
+    )
 
 
 def handle_user_folder(user_name) -> str:
@@ -34,9 +60,7 @@ def handle_user_folder(user_name) -> str:
 
 @app.route("/generate", methods=["GET"])
 def generate_image():
-    user_name = request.headers.get("name")
-    if user_name is None:
-        return "Does not send the user-name"
+    user_name = request.headers.get("name", "tmp")
 
     user_prompt = request.headers.get("prompt")
     if user_prompt is None:
@@ -52,15 +76,7 @@ def generate_image():
     return send_file(file_path, mimetype="image/jpeg", as_attachment=True)
 
 
-# @app.route("/generate/<string:user_prompt>", methods=["GET"])
-# def make_image(user_prompt: str):
-#     image = model.generate(prompt=user_prompt)
-#     file_path = os.path.join(FOLDER_PATH, f"{user_prompt}.jpg")
-
-#     image.save(file_path)
-
-#     return send_file(file_path, mimetype="image/jpeg", as_attachment=True)
-
-
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    model.load()
+    init()
+    app.run(host="0.0.0.0")

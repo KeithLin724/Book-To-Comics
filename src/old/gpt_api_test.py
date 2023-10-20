@@ -1,6 +1,7 @@
 import g4f
 import json
 from pprint import pformat
+from g4f.api import run_api
 
 g4f.logging = True  # enable logging
 g4f.check_version = False  # Disable automatic version checking
@@ -33,7 +34,6 @@ response = g4f.ChatCompletion.create(
 )  # alterative model setting
 
 response = response[response.index("{") : response.index("}") + 1]
-
 
 response = json.loads(response)
 
