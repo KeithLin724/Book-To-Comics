@@ -1,4 +1,4 @@
-from flask import Flask, send_file, request, jsonify
+from flask import Flask, send_file, request, jsonify, render_template
 from flask_cors import CORS
 from stable_diffusion import TextToImage
 import g4f
@@ -18,14 +18,15 @@ def init():
     g4f.logging = True  # enable logging
     g4f.check_version = False  # Disable automatic version checking
     print(g4f.version)  # check version
-    print(g4f.Provider.Ails.params)  # supported args
+    # print(g4f.Provider.Ails.params)  # supported args
     if not os.path.exists(FOLDER_PATH):
         os.makedirs(FOLDER_PATH)
 
 
 @app.route("/")
 def hello():
-    return "Hello, World!"
+    # return f"Hello welcome to KYchat, we using gpt4free version is {g4f.version}"
+    return render_template("index.html", g4f_version=g4f.version)
 
 
 @app.route("/test")

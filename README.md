@@ -12,3 +12,6 @@ link:
 - https://github.com/xtekky/gpt4free
 
 - https://github.com/xtekky/gpt4free#interference-openai-proxy-api-use-with-openai-python-package
+
+#### flask with html 
+- https://www.youtube.com/watch?v=w54WLGm4OrE
