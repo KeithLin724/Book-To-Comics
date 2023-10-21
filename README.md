@@ -7,6 +7,11 @@ link:
 - https://monsterapi.ai/user/custom-datasets
 - temp mail
 - https://devs.tw/post/448
+#### http server 
+- https://zhuanlan.zhihu.com/p/344743820
+- https://blog.csdn.net/ling620/article/details/107562294
+
+
 #### gpt
 
 - https://github.com/xtekky/gpt4free
@@ -15,3 +20,14 @@ link:
 
 #### flask with html 
 - https://www.youtube.com/watch?v=w54WLGm4OrE
+
+https://www.youtube.com/watch?time_continue=600&v=Ozb9mZg7MVM&embeds_referring_euri=https%3A%2F%2Fwww.bing.com%2F&embeds_referring_origin=https%3A%2F%2Fwww.bing.com&source_ve_path=MTM5MTE3LDEzOTExNywyMzg1MQ&feature=emb_title
+
+#### start server 
+```
+sudo service redis-server start
+celery -A api_server worker --loglevel=info
+
+
+sudo service redis-server stop
+```

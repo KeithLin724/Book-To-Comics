@@ -1,17 +1,30 @@
-from flask import Flask, send_file, request, jsonify, render_template
-from flask_cors import CORS
+from flask import Flask, send_file, request, jsonify, render_template, Response
+
+# from flask_cors import CORS
 from stable_diffusion import TextToImage
 import g4f
 import os
-from multiprocessing import Process
+import logging
+from PIL import Image
+from requests_toolbelt import MultipartEncoder
+
+# from celery import Celery
+
+# from multiprocessing import Process
 
 app = Flask(__name__)
 
-PORT_g4f = 1337
 
 model = TextToImage()
 
-FOLDER_PATH = "./tmp"
+FOLDER_PATH = "./image"
+
+logger = logging.getLogger("werkzeug")  # grabs underlying WSGI logger
+# handler = logging.FileHandler("test_server.log")  # creates handler for the log file
+# logger.addHandler(handler)  # adds handler to the werkzeug WSGI logger
+
+
+# function
 
 
 def init():
@@ -25,22 +38,31 @@ def init():
 
 @app.route("/")
 def hello():
-    # return f"Hello welcome to KYchat, we using gpt4free version is {g4f.version}"
     return render_template("index.html", g4f_version=g4f.version)
 
 
-@app.route("/test")
+@app.route("/test", methods=["POST"])
 def testing():
-    web_URL = f"http://{request.remote_addr}:{PORT_g4f}"
-    return f"testing, IP :{web_URL}"
+    # file_path = "./image/tmp/Write a short story about a mysterious package that arrives at your doorstep..jpg"
+    # send_file(file_path, mimetype="image/jpeg", as_attachment=True)
+    if request.content_type.startswith("application/json"):
+        print(request.headers.get("Content-Type"))
+        print(request.get_json())
+    return "OK"
 
 
-@app.route("/chat", methods=["GET"])
+@app.route("/chat", methods=["POST"])
 def chat_to_ai():
-    model = request.headers.get("model", "gpt-3.5-turbo")
-    message = request.headers.get("message")
+    if not request.data or not request.content_type.startswith("application/json"):
+        return jsonify(
+            {"message": "we only accept format like {'model':'...', 'message':'...'}"}
+        )
 
-    return g4f.ChatCompletion.create(
+    data = request.get_json()
+    model = data.get("model", "gpt-3.5-turbo")
+    message = data.get("message")
+
+    reply_message = g4f.ChatCompletion.create(
         model=model,
         messages=[
             {
@@ -49,6 +71,8 @@ def chat_to_ai():
             }
         ],
     )
+
+    return jsonify({"message": reply_message})
 
 
 def handle_user_folder(user_name) -> str:
@@ -59,13 +83,30 @@ def handle_user_folder(user_name) -> str:
     return path
 
 
-@app.route("/generate", methods=["GET"])
-def generate_image():
-    user_name = request.headers.get("name", "tmp")
+@app.route("/result")
+def replay_image():
+    return
 
-    user_prompt = request.headers.get("prompt")
+
+@app.route("/generate", methods=["POST"])
+def generate_image_request():
+    error_reply = jsonify(
+        {"message": "we only accept format like {'name':'...', 'prompt':'...'}"}
+    )
+
+    if not request.data or not request.content_type.startswith("application/json"):
+        return error_reply
+
+    data = request.get_json()
+
+    user_name = data.get("name", "tmp")
+
+    user_prompt = data.get("prompt")
     if user_prompt is None:
-        return "Does not send the prompt"
+        return error_reply
+
+    # 1 put the image to queue
+    # 2
 
     user_save_folder_path = handle_user_folder(user_name=user_name)
     image = model.generate(prompt=user_prompt)
@@ -80,4 +121,4 @@ def generate_image():
 if __name__ == "__main__":
     model.load()
     init()
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0", debug=True)
