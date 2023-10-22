@@ -9,13 +9,11 @@ import time
 import logging
 from PIL import Image
 
-from rq import Queue, get_current_job
+from rq import Queue
 from redis import Redis
 
 from api_func import generate_image_queue
 
-
-from copy import deepcopy
 import rq_dashboard
 
 import uuid
