@@ -33,6 +33,9 @@ redis-server --service-start
 redis-server --service-stop
 redis-cli.exe -h 127.0.0.1 -p 6379 
 ```
+#### uuid
+- https://zhuanlan.zhihu.com/p/164768549
+
 #### Test server use postman 
 - https://web.postman.co/workspace/My-Workspace~f18e8324-abbb-4a30-8e59-a49013346310/request/create?requestId=cba17e25-d90c-409d-970e-5ceed3fd2b45
 

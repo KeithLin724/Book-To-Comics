@@ -1,4 +1,5 @@
 from flask import Flask, send_file, request, jsonify, render_template, Response
+import socket
 
 # from flask_cors import CORS
 from stable_diffusion import TextToImage
@@ -11,11 +12,14 @@ from PIL import Image
 from rq import Queue, get_current_job
 from redis import Redis
 
-from api_func import generate_image
-import pickle
+from api_func import generate_image_queue
+
 
 from copy import deepcopy
 import rq_dashboard
+
+import uuid
+import datetime
 
 app = Flask(__name__)
 redis_connect = Redis(host="localhost", port=6379)
@@ -28,6 +32,8 @@ model = TextToImage()
 # taskQueue = TaskQueue()
 
 FOLDER_PATH = "./image"
+SERVER_IP = socket.gethostbyname(socket.gethostname())
+SERVER_PORT = 5000
 
 logger = logging.getLogger("werkzeug")  # grabs underlying WSGI logger
 # handler = logging.FileHandler("test_server.log")  # creates handler for the log file
@@ -84,26 +90,22 @@ def testing():
     # ! like user_name/{id}.png
     # ! generate_image not reply a file path , return a Image
 
-    try:
-        job = task_image_queue.enqueue(
-            generate_image,
-            "http://140.113.89.60:5000/generate",
-            {
-                "name": user_name,
-                "prompt": user_prompt,
-            },
-        )
-        # result = generate_image.delay(user_name, user_prompt)
-        return jsonify(
-            {
-                "task_id": job.get_id(),
-                "queue_len": len(task_image_queue),
-                "result-link": "test-result",
-            }
-        )
-    except Exception as e:
-        print(f"Error enqueuing job: {str(e)}")
-        return jsonify({"error": "An error occurred while enqueuing the job"})
+    job = task_image_queue.enqueue(
+        generate_image_queue,
+        "http://140.113.89.60:5000/generate",
+        {
+            "name": user_name,
+            "prompt": user_prompt,
+        },
+    )
+    # result = generate_image.delay(user_name, user_prompt)
+    return jsonify(
+        {
+            "task_id": job.get_id(),
+            "queue_len": len(task_image_queue),
+            "result-link": "test-result",
+        }
+    )
 
 
 @app.route("/test-result", methods=["POST"])
@@ -178,21 +180,6 @@ def handle_user_folder(user_name) -> str:
     return path
 
 
-# def generate_image(user_name: str, prompt: str):
-#     user_save_folder_path = handle_user_folder(user_name=user_name)
-#     image = model.generate(prompt=prompt)
-
-#     file_path = os.path.join(user_save_folder_path, f"{prompt}.jpg")
-
-#     image.save(file_path)
-#     return file_path
-
-
-@app.route("/result")
-def replay_image():
-    return
-
-
 @app.route("/generate", methods=["POST"])
 def generate_image_request():
     error_reply = jsonify(
@@ -210,12 +197,96 @@ def generate_image_request():
     if user_prompt is None:
         return error_reply
 
-    user_save_folder_path = handle_user_folder(user_name=user_name)
+    job = task_image_queue.enqueue(
+        generate_image_queue,
+        f"http://{SERVER_IP}:{SERVER_PORT}/generate-redis",
+        {
+            "name": user_name,
+            "prompt": user_prompt,
+        },
+    )
+
+    while not job.is_finished:
+        time.sleep(1)
+
+    result = job.result
+    print(result.json())
+
+    return result.json()
+
+
+@app.route("/generate-redis", methods=["POST"])
+def generate_image():
+    """
+    This is for the redis server send the request.
+
+    The `generate_image` function generates an image based on user input, saves it with a unique file
+    name, and returns the file information.
+    :return: a JSON response. If the request data is missing or the content type is not in the expected
+    format, it returns an error message. Otherwise, it generates an image based on the provided prompt
+    using a model, saves the image to a file with a unique name, and returns a JSON object containing
+    the unique ID, file path, file name, and current time.
+    """
+    error_reply = jsonify(
+        {"message": "we only accept format like {'name':'...', 'prompt':'...'}"}
+    )
+
+    if not request.data or not request.content_type.startswith("application/json"):
+        return error_reply
+
+    data = request.get_json()
+
+    user_name, user_prompt = data.get("name"), data.get("prompt")
+
     image = model.generate(prompt=user_prompt)
 
-    file_path = os.path.join(user_save_folder_path, f"{user_prompt}.jpg")
+    now_time = datetime.datetime.now()
 
+    # make a unique file name
+    unique_file_name = uuid.uuid5(
+        namespace=uuid.NAMESPACE_DNS,
+        name=f"{user_name}_{user_prompt}_{now_time}",
+    )
+
+    file_path = handle_user_folder(user_name=user_name)
+
+    file_path = os.path.join(file_path, f"{unique_file_name}.png")
     image.save(file_path)
+
+    return jsonify(
+        {
+            "id": unique_file_name,
+            "file_path": file_path,
+            "file_name": f"{unique_file_name}.png",
+            "time": now_time,
+        }
+    )
+
+
+@app.route("/result", methods=["POST"])
+def replay_image():
+    error_reply = jsonify({"message": "we need the 'id' and the 'name' or 'file_path'"})
+
+    if not request.data or not request.content_type.startswith("application/json"):
+        return error_reply
+
+    data: dict = request.get_json()
+
+    file_path = data.get("file_path", None)
+
+    # check the file path
+    if file_path is not None and os.path.exists(file_path):
+        return send_file(file_path, mimetype="image/jpeg", as_attachment=True)
+
+    # check the user_name and the user_id is both exits
+    user_name, user_id = data.get("name", None), data.get("id", None)
+    if user_name is None or user_id is None:
+        return jsonify({"message": "please summit the 'id' and 'name'"})
+
+    # make the file path and check it
+    file_path = os.path.join(FOLDER_PATH, user_name, f"{user_id}.png")
+    if not os.path.exists(file_path):
+        return jsonify({"message": "can not find the file about this id"})
 
     return send_file(file_path, mimetype="image/jpeg", as_attachment=True)
 
@@ -223,4 +294,4 @@ def generate_image_request():
 if __name__ == "__main__":
     init()
 
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", port=SERVER_PORT, debug=True)

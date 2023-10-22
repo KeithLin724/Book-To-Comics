@@ -44,4 +44,11 @@ class TextToImage:
 
     @staticmethod
     def to_pickle(obj):
+        """
+        The function `to_pickle` takes an object as input and returns a pickled representation of that
+        object.
+
+        :param obj: The `obj` parameter is the object that you want to convert to a pickle string
+        :return: the object serialized as a pickle string.
+        """
         return pickle.dumps(obj)
