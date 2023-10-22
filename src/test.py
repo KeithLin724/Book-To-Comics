@@ -1,38 +1,30 @@
-import queue
-import threading
+# worker.py
 
-# Create a task queue
-task_queue = queue.Queue()
+import os
+from rq import Queue, get_current_job
+from redis import Redis, StrictRedis
+import time
+from test_math import calculate_factorial
 
-
-# Define a worker function to process tasks
-def worker():
-    while True:
-        try:
-            task = task_queue.get(timeout=1)  # Get a task from the queue
-            # Process the task here
-            print(f"Processing task: {task}")
-            task_queue.task_done()  # Mark the task as done
-        except queue.Empty:
-            # Handle the case where the queue is empty
-            pass
+# Connect to the Redis server
+# redis_connection = Redis(host="localhost", port=6379, db=0)
+# print(redis_connection)
+# Create an RQ queue
+queue = Queue("test_worker", connection=StrictRedis())
 
 
-# Create worker threads
-num_workers = 4  # Adjust the number of worker threads as needed
-threads = [threading.Thread(target=worker) for _ in range(num_workers)]
+# Define a function to calculate the factorial of a number
 
-# Start the worker threads
-for thread in threads:
-    thread.start()
 
-# Add tasks to the queue
-for i in range(10):
-    task_queue.put(f"Task {i}")
+if __name__ == "__main__":
+    # Enqueue a task to calculate the factorial of 10
+    job = queue.enqueue(calculate_factorial, 10)
 
-# Wait for all tasks to be processed
-task_queue.join()
+    print(f"Task ID: {job.get_id()}")
 
-# Stop the worker threads (in a production scenario, use a proper termination signal)
-for thread in threads:
-    thread.join()
+    # Wait for the task to complete and print the result
+    while not job.is_finished:
+        time.sleep(1)
+
+    result = job.result
+    print(f"Factorial of 10 is: {result}")

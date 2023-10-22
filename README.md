@@ -25,12 +25,17 @@ https://www.youtube.com/watch?time_continue=600&v=Ozb9mZg7MVM&embeds_referring_e
 
 #### install Redis
 - https://redis.com.cn/redis-installation.html
+- https://www.cnblogs.com/arkenstone/p/7813551.html
+- about the rq -> https://mrchi.cc/posts/introduction-to-rq/
 
 ```
 redis-server --service-start
 redis-server --service-stop
 redis-cli.exe -h 127.0.0.1 -p 6379 
 ```
+#### Test server use postman 
+- https://web.postman.co/workspace/My-Workspace~f18e8324-abbb-4a30-8e59-a49013346310/request/create?requestId=cba17e25-d90c-409d-970e-5ceed3fd2b45
+
 
 #### start server 
 ```

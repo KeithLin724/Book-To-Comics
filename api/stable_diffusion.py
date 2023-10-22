@@ -1,6 +1,7 @@
 from diffusers import StableDiffusionPipeline, EulerDiscreteScheduler
 import torch
 from PIL.Image import Image
+import pickle
 
 """
 The `TextToImage` class uses the Stable Diffusion model to generate an image based on a given prompt.
@@ -40,3 +41,7 @@ class TextToImage:
         image = self.pipe(prompt).images[0]
         torch.cuda.empty_cache()
         return image
+
+    @staticmethod
+    def to_pickle(obj):
+        return pickle.dumps(obj)
