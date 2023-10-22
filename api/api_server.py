@@ -5,6 +5,7 @@ import socket
 from stable_diffusion import TextToImage
 import g4f
 import os
+import io
 import time
 import logging
 from PIL import Image
@@ -12,7 +13,8 @@ from PIL import Image
 from rq import Queue
 from redis import Redis
 
-from api_func import generate_image_queue
+from api_task_func import generate_image_queue
+from api_func import image_to_bytes
 
 import rq_dashboard
 
@@ -247,15 +249,22 @@ def generate_image():
     )
 
     file_path = handle_user_folder(user_name=user_name)
+    file_name = f"{unique_file_name}.jpg"
+    file_path = os.path.join(file_path, file_name)
 
-    file_path = os.path.join(file_path, f"{unique_file_name}.png")
     image.save(file_path)
+    id_key = str(unique_file_name)
+    image_bytes = image_to_bytes(image)
+
+    redis_connect.set(id_key, image_bytes)
+
+    redis_connect.expire(id_key, 86400)  # save in server 1 days
 
     return jsonify(
         {
             "id": unique_file_name,
             "file_path": file_path,
-            "file_name": f"{unique_file_name}.png",
+            "file_name": file_name,
             "time": now_time,
         }
     )
@@ -278,7 +287,18 @@ def replay_image():
 
     # check the user_name and the user_id is both exits
     user_name, user_id = data.get("name", None), data.get("id", None)
-    if user_name is None or user_id is None:
+
+    # find the redis server is have it
+    if user_id and (image_in_server := redis_connect.get(user_id)) is not None:
+        image_in_server = io.BytesIO(image_in_server)
+        return send_file(
+            path_or_file=image_in_server,
+            mimetype="image/jpeg",
+            as_attachment=True,
+            download_name=f"{user_id}.jpg",
+        )
+
+    if user_name is None:
         return jsonify({"message": "please summit the 'id' and 'name'"})
 
     # make the file path and check it

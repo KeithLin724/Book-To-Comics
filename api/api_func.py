@@ -1,21 +1,28 @@
-import requests
+import io
+from PIL import Image
 
 
-def generate_image_queue(connect_path: str, data: dict):
+def image_to_bytes(image):
     """
-    For redis queue
+    The function `image_to_bytes` converts an image object into a byte array.
 
-    The function `generate_image_queue` sends a POST request to a specified path with JSON data and
-    returns the response.
-
-    :param connect_path: The `connect_path` parameter is a string that represents the URL or endpoint
-    where the request will be sent to. It is the path to connect to the server or API
-    :type connect_path: str
-    :param data: The `data` parameter is a dictionary that contains the data to be sent in the request
-    body as JSON
-    :type data: dict
-    :return: the response object from the POST request made to the specified `connect_path` with the
-    provided `data` as JSON payload.
+    :param image: The "image" parameter is expected to be a PIL (Python Imaging Library) image object
+    :return: the image data as bytes.
     """
-    res = requests.post(connect_path, json=data)
-    return res
+    img_byte_array = io.BytesIO()
+    image.save(img_byte_array, format="JPEG")
+    img_data = img_byte_array.getvalue()
+    img_byte_array.close()
+    return img_data
+
+
+def bytes_to_image(bytes_of_image):
+    """
+    The function `bytes_to_image` converts a byte array representing an image into an Image object.
+
+    :param bytes_of_image: The parameter `bytes_of_image` is expected to be a byte array that represents
+    an image
+    :return: an Image object.
+    """
+    img_byte_array = io.BytesIO(bytes_of_image)
+    return Image.open(img_byte_array)

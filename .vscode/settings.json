@@ -3,5 +3,11 @@
     "editor.defaultFormatter": "ms-python.black-formatter"
   },
   "python.formatting.provider": "none",
-  "cSpell.words": ["jsonify", "stabilityai", "toolbelt", "werkzeug"]
+  "cSpell.words": [
+    "gethostname",
+    "jsonify",
+    "stabilityai",
+    "toolbelt",
+    "werkzeug"
+  ]
 }
