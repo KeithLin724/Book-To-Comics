@@ -64,100 +64,33 @@ def hello():
     return render_template("index.html", g4f_version=g4f.version)
 
 
-@app.route("/redis-generate", methods=["POST"])
-def redis_generate():
-    data = request.get_json()
-
-
 @app.route("/test", methods=["POST"])
 def testing():
-    error_reply = jsonify(
-        {"message": "we only accept format like {'name':'...', 'prompt':'...'}"}
-    )
-
-    if not request.data or not request.content_type.startswith("application/json"):
-        return error_reply
-
-    data = request.get_json()
-
-    user_name = data.get("name", "tmp")
-
-    user_prompt = data.get("prompt")
-    if user_prompt is None:
-        return error_reply
-
-    # ! add the id in the generate_image , for make a only one file name
-    # ! like user_name/{id}.png
-    # ! generate_image not reply a file path , return a Image
-
-    job = task_image_queue.enqueue(
-        generate_image_queue,
-        "http://140.113.89.60:5000/generate",
-        {
-            "name": user_name,
-            "prompt": user_prompt,
-        },
-    )
-    # result = generate_image.delay(user_name, user_prompt)
-    return jsonify(
-        {
-            "task_id": job.get_id(),
-            "queue_len": len(task_image_queue),
-            "result-link": "test-result",
-        }
-    )
+    return jsonify({"message": "no testing"})
 
 
 @app.route("/test-result", methods=["POST"])
 def testing_result():
-    error_reply = jsonify({"message": "we only accept format like {'task_id':'...'}"})
-
-    if not request.data or not request.content_type.startswith("application/json"):
-        return error_reply
-
-    data = request.get_json()
-
-    user_name = data.get("name", "tmp")
-
-    user_task_id = data.get("task_id")
-    if user_task_id is None:
-        return error_reply
-
-    the_job = task_image_queue.fetch_job(user_task_id)
-
-    while not the_job.is_finished:
-        time.sleep(1)
-
-    result_image: Image = the_job.result
-
-    file_path = handle_user_folder(user_name=user_name)
-
-    file_path = os.path.join(file_path, f"{user_task_id}.png")
-
-    result_image.save(file_path)
-
-    return jsonify(
-        {
-            "file_path": file_path,
-        }
-    )
+    return jsonify({"message": "no testing"})
 
 
 @app.route("/test-result", methods=["GET"])
 def testing_image_return():
-    return jsonify({"result", "not ready"})
+    return jsonify({"result": "not ready"})
 
 
 @app.route("/chat", methods=["POST"])
 def chat_to_ai():
     if not request.data or not request.content_type.startswith("application/json"):
         return jsonify(
-            {"message": "we only accept format like {'model':'...', 'message':'...'}"}
+            {"error": "we only accept format like {'model':'...', 'message':'...'}"}
         )
 
     data = request.get_json()
-    model = data.get("model", "gpt-3.5-turbo")
-    message = data.get("message")
+    model, message = data.get("model", "gpt-3.5-turbo"), data.get("message")
+
+    if message is None:
+        return jsonify({"error": "You must give 'message'"})
 
     reply_message = g4f.ChatCompletion.create(
         model=model,
@@ -183,7 +116,7 @@ def handle_user_folder(user_name) -> str:
 @app.route("/generate", methods=["POST"])
 def generate_image_request():
     error_reply = jsonify(
-        {"message": "we only accept format like {'name':'...', 'prompt':'...'}"}
+        {"error": "we only accept format like {'name':'...', 'prompt':'...'}"}
     )
 
     if not request.data or not request.content_type.startswith("application/json"):
@@ -210,7 +143,6 @@ def generate_image_request():
         time.sleep(1)
 
     result = job.result
-    print(result.json())
 
     return result.json()
 
@@ -228,7 +160,7 @@ def generate_image():
     the unique ID, file path, file name, and current time.
     """
     error_reply = jsonify(
-        {"message": "we only accept format like {'name':'...', 'prompt':'...'}"}
+        {"error": "we only accept format like {'name':'...', 'prompt':'...'}"}
     )
 
     if not request.data or not request.content_type.startswith("application/json"):
@@ -248,8 +180,10 @@ def generate_image():
         name=f"{user_name}_{user_prompt}_{now_time}",
     )
 
-    file_path = handle_user_folder(user_name=user_name)
-    file_name = f"{unique_file_name}.jpg"
+    file_path, file_name = (
+        handle_user_folder(user_name=user_name),
+        f"{unique_file_name}.jpg",
+    )
     file_path = os.path.join(file_path, file_name)
 
     image.save(file_path)
@@ -266,13 +200,14 @@ def generate_image():
             "file_path": file_path,
             "file_name": file_name,
             "time": now_time,
+            "request-path": f"http://{SERVER_IP}:{SERVER_PORT}/result",
         }
     )
 
 
 @app.route("/result", methods=["POST"])
 def replay_image():
-    error_reply = jsonify({"message": "we need the 'id' and the 'name' or 'file_path'"})
+    error_reply = jsonify({"error": "we need the 'id' and the 'name' or 'file_path'"})
 
     if not request.data or not request.content_type.startswith("application/json"):
         return error_reply
@@ -299,12 +234,12 @@ def replay_image():
         )
 
     if user_name is None:
-        return jsonify({"message": "please summit the 'id' and 'name'"})
+        return jsonify({"error": "please summit the 'id' and 'name'"})
 
     # make the file path and check it
     file_path = os.path.join(FOLDER_PATH, user_name, f"{user_id}.png")
     if not os.path.exists(file_path):
-        return jsonify({"message": "can not find the file about this id"})
+        return jsonify({"error": "can not find the file about this id"})
 
     return send_file(file_path, mimetype="image/jpeg", as_attachment=True)
 
