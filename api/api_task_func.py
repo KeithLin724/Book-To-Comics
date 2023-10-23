@@ -17,5 +17,8 @@ def generate_image_queue(connect_path: str, data: dict):
     :return: the response object from the POST request made to the specified `connect_path` with the
     provided `data` as JSON payload.
     """
-    res = requests.post(connect_path, json=data)
-    return res
+    try:
+        res = requests.post(connect_path, json=data)
+        return res
+    except Exception as e:
+        return str(e)

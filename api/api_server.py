@@ -1,4 +1,5 @@
 from flask import Flask, send_file, request, jsonify, render_template, Response
+from flask_ngrok import run_with_ngrok
 import socket
 
 # from flask_cors import CORS
@@ -247,4 +248,4 @@ def replay_image():
 if __name__ == "__main__":
     init()
 
-    app.run(host="0.0.0.0", port=SERVER_PORT, debug=True)
+    app.run(host=SERVER_IP, port=SERVER_PORT, debug=True)  #

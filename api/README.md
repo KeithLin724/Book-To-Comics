@@ -7,6 +7,10 @@
 - Text to speech 
 - summery function  : https://www.youtube.com/watch?v=TsfLm5iiYb4&t=3s
 
+- free gpu 
+- https://www.youtube.com/watch?v=wBCEDCiQh3Q
+
+- install ngrok
 
 python package
 ```
