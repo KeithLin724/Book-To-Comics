@@ -28,6 +28,7 @@ https://youtu.be/hfUIWe1tK8E?si=mPC4pw0RzpSwO8yW
 
 - Docker
 https://youtu.be/Ozb9mZg7MVM?si=I2QS82bs2QUd6sFN
+
 https://youtu.be/bi0cKgmRuiA?si=9089YSxd9amBdGAA
 
 https://ithelp.ithome.com.tw/articles/10246065
@@ -35,3 +36,20 @@ https://ithelp.ithome.com.tw/articles/10246065
 - llama
 https://huggingface.co/blog/llama2
 ```
+
+### docker command with gpu
+```
+docker run --name api_server_image --gpus '"device=0"' nvidia/cuda
+
+docker start myrunoob
+
+docker stop myrunoob
+
+docker restart myrunoob
+```
+
+#### python venv 
+
+- https://zhuanlan.zhihu.com/p/341481537
+- ./api_server_venv/Scripts/Activate.ps1
+- pip install accelerate

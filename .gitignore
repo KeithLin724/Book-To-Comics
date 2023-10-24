@@ -1,0 +1,7 @@
+# 忽略"myfolder"文件夹及其所有内容
+api_server_venv
+api_server_linux
+.vscode
+api/image
+# 忽略所有.log文件
+*.log

@@ -22,19 +22,20 @@ import rq_dashboard
 import uuid
 import datetime
 
-app = Flask(__name__)
-redis_connect = Redis(host="localhost", port=6379)
-task_image_queue = Queue("generate-image-queue", connection=redis_connect)
+SERVER_IP = socket.gethostbyname(socket.gethostname())
+FOLDER_PATH = "./image"
+SERVER_PORT = 5000
 
+app = Flask(__name__)
+redis_connect = Redis(host="localhost", port=6379)  # host=SERVER_IP, port=6379
+task_image_queue = Queue("generate-image-queue", connection=redis_connect)
+# new_worker = Worker([task_image_queue], connection=redis_connect, name="work1")
 app.config.from_object(rq_dashboard.default_settings)
 app.register_blueprint(rq_dashboard.blueprint, url_prefix="/rq")
 
 model = TextToImage()
 # taskQueue = TaskQueue()
 
-FOLDER_PATH = "./image"
-SERVER_IP = socket.gethostbyname(socket.gethostname())
-SERVER_PORT = 5000
 
 logger = logging.getLogger("werkzeug")  # grabs underlying WSGI logger
 # handler = logging.FileHandler("test_server.log")  # creates handler for the log file
@@ -125,9 +126,8 @@ def generate_image_request():
 
     data = request.get_json()
 
-    user_name = data.get("name", request.host)
+    user_name, user_prompt = data.get("name", request.host), data.get("prompt")
 
-    user_prompt = data.get("prompt")
     if user_prompt is None:
         return error_reply
 
@@ -247,5 +247,4 @@ def replay_image():
 
 if __name__ == "__main__":
     init()
-
-    app.run(host=SERVER_IP, port=SERVER_PORT, debug=True)  #
+    app.run(host="0.0.0.0", port=SERVER_PORT, debug=True)  #
