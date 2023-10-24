@@ -9,6 +9,7 @@
     "ngrok",
     "stabilityai",
     "toolbelt",
+    "wavfile",
     "werkzeug"
   ],
   "workbench.colorCustomizations": {
