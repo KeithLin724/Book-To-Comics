@@ -3,7 +3,7 @@ from flask_ngrok import run_with_ngrok
 import socket
 
 # from flask_cors import CORS
-from stable_diffusion import TextToImage
+from model import TextToImage
 import g4f
 import os
 import io
