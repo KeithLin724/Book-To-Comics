@@ -11,6 +11,8 @@ link:
 - https://zhuanlan.zhihu.com/p/344743820
 - https://blog.csdn.net/ling620/article/details/107562294
 
+#### some new ai 
+- https://huggingface.co/docs/diffusers/main/en/api/pipelines/overview
 
 #### gpt
 
