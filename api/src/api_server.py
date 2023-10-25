@@ -21,6 +21,7 @@ import rq_dashboard
 
 import uuid
 import datetime
+from api_json import json_to_file
 
 SERVER_IP = socket.gethostbyname(socket.gethostname())
 FOLDER_PATH = "./image"
@@ -59,6 +60,13 @@ def init():
     # print(g4f.Provider.Ails.params)  # supported args
     model.load()
     is_connect_redis()
+    json_to_file(
+        json_obj={
+            "IP": SERVER_IP,
+            "port": SERVER_PORT,
+        },
+        file_name="server_data.json",
+    )
 
 
 @app.route("/")
