@@ -21,6 +21,8 @@ import rq_dashboard
 
 import uuid
 import datetime
+from copy import deepcopy
+import pickle
 from api_json import json_to_file
 
 SERVER_IP = socket.gethostbyname(socket.gethostname())
@@ -76,7 +78,30 @@ def hello():
 
 @app.route("/test", methods=["POST"])
 def testing():
-    return jsonify({"message": "no testing"})
+    error_reply = jsonify(
+        {"error": "we only accept format like {'name':'...', 'prompt':'...'}"}
+    )
+
+    if not request.data or not request.content_type.startswith("application/json"):
+        return error_reply
+
+    data = request.get_json()
+
+    user_name, user_prompt = data.get("name", "tmp"), data.get("prompt")
+
+    if user_prompt is None:
+        return error_reply
+
+    job = task_image_queue.enqueue(
+        generate_image_queue,
+        f"http://{SERVER_IP}:{SERVER_PORT}/generate-redis",
+        {
+            "name": user_name,
+            "prompt": user_prompt,
+        },
+    )
+
+    return jsonify({"task_id": job.get_id()})
 
 
 @app.route("/test-result", methods=["POST"])
