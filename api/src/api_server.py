@@ -3,7 +3,7 @@ from flask_ngrok import run_with_ngrok
 import socket
 
 # from flask_cors import CORS
-from stable_diffusion import TextToImage
+from model import TextToImage
 import g4f
 import os
 import io
@@ -21,20 +21,24 @@ import rq_dashboard
 
 import uuid
 import datetime
+from copy import deepcopy
+import pickle
+from api_json import json_to_file
+
+SERVER_IP = socket.gethostbyname(socket.gethostname())
+FOLDER_PATH = "./image"
+SERVER_PORT = 5000
 
 app = Flask(__name__)
-redis_connect = Redis(host="localhost", port=6379)
+redis_connect = Redis(host="localhost", port=6379)  # host=SERVER_IP, port=6379
 task_image_queue = Queue("generate-image-queue", connection=redis_connect)
-
+# new_worker = Worker([task_image_queue], connection=redis_connect, name="work1")
 app.config.from_object(rq_dashboard.default_settings)
 app.register_blueprint(rq_dashboard.blueprint, url_prefix="/rq")
 
 model = TextToImage()
 # taskQueue = TaskQueue()
 
-FOLDER_PATH = "./image"
-SERVER_IP = socket.gethostbyname(socket.gethostname())
-SERVER_PORT = 5000
 
 logger = logging.getLogger("werkzeug")  # grabs underlying WSGI logger
 # handler = logging.FileHandler("test_server.log")  # creates handler for the log file
@@ -58,6 +62,13 @@ def init():
     # print(g4f.Provider.Ails.params)  # supported args
     model.load()
     is_connect_redis()
+    json_to_file(
+        json_obj={
+            "IP": SERVER_IP,
+            "port": SERVER_PORT,
+        },
+        file_name="server_data.json",
+    )
 
 
 @app.route("/")
@@ -67,7 +78,30 @@ def hello():
 
 @app.route("/test", methods=["POST"])
 def testing():
-    return jsonify({"message": "no testing"})
+    error_reply = jsonify(
+        {"error": "we only accept format like {'name':'...', 'prompt':'...'}"}
+    )
+
+    if not request.data or not request.content_type.startswith("application/json"):
+        return error_reply
+
+    data = request.get_json()
+
+    user_name, user_prompt = data.get("name", "tmp"), data.get("prompt")
+
+    if user_prompt is None:
+        return error_reply
+
+    job = task_image_queue.enqueue(
+        generate_image_queue,
+        f"http://{SERVER_IP}:{SERVER_PORT}/generate-redis",
+        {
+            "name": user_name,
+            "prompt": user_prompt,
+        },
+    )
+
+    return jsonify({"task_id": job.get_id()})
 
 
 @app.route("/test-result", methods=["POST"])
@@ -125,9 +159,8 @@ def generate_image_request():
 
     data = request.get_json()
 
-    user_name = data.get("name", request.host)
+    user_name, user_prompt = data.get("name", request.host), data.get("prompt")
 
-    user_prompt = data.get("prompt")
     if user_prompt is None:
         return error_reply
 
@@ -247,5 +280,4 @@ def replay_image():
 
 if __name__ == "__main__":
     init()
-
-    app.run(host=SERVER_IP, port=SERVER_PORT, debug=True)  #
+    app.run(host="0.0.0.0", port=SERVER_PORT, debug=True)  #

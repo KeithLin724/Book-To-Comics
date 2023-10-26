@@ -4,11 +4,14 @@
   },
   "python.formatting.provider": "none",
   "cSpell.words": [
+    "audioldm",
+    "cvssp",
     "gethostname",
     "jsonify",
     "ngrok",
     "stabilityai",
     "toolbelt",
+    "wavfile",
     "werkzeug"
   ],
   "workbench.colorCustomizations": {
