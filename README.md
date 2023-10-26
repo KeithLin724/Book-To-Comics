@@ -10,7 +10,8 @@ link:
 #### http server 
 - https://zhuanlan.zhihu.com/p/344743820
 - https://blog.csdn.net/ling620/article/details/107562294
-
+- log 
+  - https://www.jianshu.com/p/daf5c9e57c65
 #### some new ai 
 - https://huggingface.co/docs/diffusers/main/en/api/pipelines/overview
 
