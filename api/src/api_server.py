@@ -8,7 +8,6 @@ import g4f
 import os
 import io
 import time
-import logging
 from PIL import Image
 
 from rq import Queue
