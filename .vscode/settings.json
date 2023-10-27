@@ -9,6 +9,7 @@
     "cvssp",
     "Formeight",
     "gethostname",
+    "hgetall",
     "jsonify",
     "ngrok",
     "stabilityai",

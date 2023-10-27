@@ -2,7 +2,11 @@
 ## Written BY KYLiN
 
 ---
+## Update list 
+- use FastAPI
 
+
+---
 
 - Text to speech 
 - summery function  : https://www.youtube.com/watch?v=TsfLm5iiYb4&t=3s
@@ -46,6 +50,9 @@ docker start myrunoob
 docker stop myrunoob
 
 docker restart myrunoob
+
+docker-compose -f ./redis-docker-compose.yml up
+rq worker generate-image-queue
 ```
 
 #### python venv 
