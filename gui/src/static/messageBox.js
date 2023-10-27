@@ -32,17 +32,56 @@ $(document).ready(() => {
 
     console.log(requestOptions);
 
+    //     fetch("/get", requestOptions)
+    //       .then((response) => response.json())
+    //       .then((recvData) => {
+    //         // console.log(recvData); // type is json
+    //         console.log(recvData["msg"]);
+    //         var botHtml =
+    //           '<div class="d-flex justify-content-start mb-4"><div class="img_cont_msg"><img src="https://i.ibb.co/fSNP7Rz/icons8-chatgpt-512.png" class="rounded-circle user_img_msg"></div><div class="msg_cotainer">' +
+    //           recvData["msg"] +
+    //           '<span class="msg_time">' +
+    //           str_time +
+    //           "</span></div></div>";
+    //         document
+    //           .getElementById("messageFormeight")
+    //           .insertAdjacentHTML("beforeend", botHtml);
+    //       })
+    //       .catch((error) => {
+    //         console.error("Error:", error);
+    //       });
+
+    //     event.preventDefault();
+    //   });
+
     fetch("/get", requestOptions)
-      .then((response) => response.json())
-      .then((recvData) => {
-        // console.log(recvData); // type is json
-        console.log(recvData["msg"]);
+      .then((response) => {
+        const contentType = response.headers.get("content-type");
+
+        if (contentType.includes("application/json")) {
+          //
+          return response.json().then((recvData) => recvData["msg"]);
+          //
+        } else if (contentType.includes("image/jpeg")) {
+          //
+          return response.blob().then((imageBlob) => {
+            const imgUrl = URL.createObjectURL(imageBlob);
+            const imageHtml = `<img id="image" src="${imgUrl}" alt="Received Image">`;
+            return imageHtml;
+          });
+        } else {
+          // Handle other content types here
+          throw new Error("Unsupported content type: " + contentType);
+        }
+      })
+      .then((displayStr) => {
         var botHtml =
           '<div class="d-flex justify-content-start mb-4"><div class="img_cont_msg"><img src="https://i.ibb.co/fSNP7Rz/icons8-chatgpt-512.png" class="rounded-circle user_img_msg"></div><div class="msg_cotainer">' +
-          recvData["msg"] +
+          displayStr +
           '<span class="msg_time">' +
           str_time +
           "</span></div></div>";
+
         document
           .getElementById("messageFormeight")
           .insertAdjacentHTML("beforeend", botHtml);

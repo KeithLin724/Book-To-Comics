@@ -159,7 +159,7 @@ def generate_image_request():
 
     data = request.get_json()
 
-    user_name, user_prompt = data.get("name", request.host), data.get("prompt")
+    user_name, user_prompt = data.get("name", "tmp"), data.get("prompt")
 
     if user_prompt is None:
         return error_reply
