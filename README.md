@@ -2,6 +2,14 @@
 ## Written By KYLiN , Vincent
 
 --- 
+# use python frontend 
+- https://www.infoworld.com/article/3700689/3-python-web-frameworks-for-beautiful-front-ends.html
+- reflex 
+  - https://reflex.dev/docs/getting-started/introduction/ 
+
+prompt
+"if this text , generate iron man, is generate image message? return a prompt if is a generated message, please only return a JSON format {generate: true or false, prompt: ......}"
+---
 
 link: 
 - https://monsterapi.ai/user/custom-datasets
