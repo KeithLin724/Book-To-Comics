@@ -8,7 +8,6 @@ import g4f
 import os
 import io
 import time
-import logging
 from PIL import Image
 
 from rq import Queue
@@ -40,7 +39,7 @@ model = TextToImage()
 # taskQueue = TaskQueue()
 
 
-logger = logging.getLogger("werkzeug")  # grabs underlying WSGI logger
+# logger = logging.getLogger("werkzeug")  # grabs underlying WSGI logger
 # handler = logging.FileHandler("test_server.log")  # creates handler for the log file
 # logger.addHandler(handler)  # adds handler to the werkzeug WSGI logger
 
@@ -49,16 +48,16 @@ logger = logging.getLogger("werkzeug")  # grabs underlying WSGI logger
 def is_connect_redis():
     try:
         redis_connect.ping()  # This will check if the connection to Redis is alive
-        print("Connected to Redis successfully.")
+        app.logger.info(msg="Connected to Redis successfully.")
     except Exception as e:
-        print(f"Failed to connect to Redis: {str(e)}")
+        app.logger.error(msg=f"Failed to connect to Redis: {str(e)}")
         exit(-1)
 
 
 def init():
     g4f.logging = True  # enable logging
     g4f.check_version = False  # Disable automatic version checking
-    print(g4f.version)  # check version
+    app.logger.info(msg=f"g4f version:{g4f.version}")  # check version
     # print(g4f.Provider.Ails.params)  # supported args
     model.load()
     is_connect_redis()
@@ -159,7 +158,7 @@ def generate_image_request():
 
     data = request.get_json()
 
-    user_name, user_prompt = data.get("name", request.host), data.get("prompt")
+    user_name, user_prompt = data.get("name", "tmp"), data.get("prompt")
 
     if user_prompt is None:
         return error_reply
@@ -173,12 +172,7 @@ def generate_image_request():
         },
     )
 
-    while not job.is_finished:
-        time.sleep(1)
-
-    result = job.result
-
-    return result.json()
+    return jsonify({"task_id": job.get_id()})
 
 
 @app.route("/generate-redis", methods=["POST"])

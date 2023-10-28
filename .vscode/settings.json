@@ -5,8 +5,11 @@
   "python.formatting.provider": "none",
   "cSpell.words": [
     "audioldm",
+    "cotainer",
     "cvssp",
+    "Formeight",
     "gethostname",
+    "hgetall",
     "jsonify",
     "ngrok",
     "stabilityai",
