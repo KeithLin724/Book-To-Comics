@@ -60,7 +60,9 @@ def chat_mode(prompt: str):
 
 
 def generate_image_mode(prompt: str):
+    prompt = take_out_str(string=prompt, cmd="generate image")
     url = "/".join([SERVER_URL, "generate"])
+
     try:
         # 发出 GET 请求
         response = requests.post(url, json={"prompt": prompt})
@@ -71,30 +73,13 @@ def generate_image_mode(prompt: str):
             data = response.json()
 
             app.logger.info(f"get data: {data}")
+            dis = {"msg": "catch it", "task_id": data.get("task_id")}
+            app.logger.info(f"display :{dis}")
+
+            return jsonify(dis)
 
         else:
             # return "Failed to get data from the server", 500
-            return jsonify(
-                {"msg": "Failed to get data from the server :state code 500"}
-            )
-
-        url = "/".join([SERVER_URL, "result"])
-
-        response = requests.post(url, json=data)
-
-        if response.status_code == 200:
-            # 成功获取数据
-            app.logger.info(f"get image :{data}")
-            image_bytes = io.BytesIO(response.content)
-
-            return send_file(
-                path_or_file=image_bytes,
-                mimetype="image/jpeg",
-                as_attachment=True,
-                download_name=f"{prompt}.jpg",
-            )
-
-        else:
             return jsonify(
                 {"msg": "Failed to get data from the server :state code 500"}
             )
@@ -142,7 +127,6 @@ def chat():
     app.logger.info(msg=prompt)
 
     if "generate image" in prompt:
-        prompt = take_out_str(string=prompt, cmd="generate image")
         return generate_image_mode(prompt=prompt)
 
     elif "test" in prompt:

@@ -3,6 +3,8 @@
 
 ---
 ## Update list 
+- put to test to generate 
+
 - use FastAPI
 
 

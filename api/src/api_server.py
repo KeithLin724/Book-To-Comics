@@ -172,12 +172,7 @@ def generate_image_request():
         },
     )
 
-    while not job.is_finished:
-        time.sleep(1)
-
-    result = job.result
-
-    return result.json()
+    return jsonify({"task_id": job.get_id()})
 
 
 @app.route("/generate-redis", methods=["POST"])
