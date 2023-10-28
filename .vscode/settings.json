@@ -13,6 +13,7 @@
     "hgetall",
     "jsonify",
     "ngrok",
+    "pydantic",
     "stabilityai",
     "toolbelt",
     "uvicorn",

@@ -2,6 +2,7 @@
 api_server_venv
 api_server_linux
 # .vscode
-api/src/image
+api/src/images
+api-flask/src/image
 # 忽略所有.log文件
 *.log
