@@ -1,11 +1,19 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
 import uvicorn
 import router
-from base import SERVER_IP, SERVER_PORT, TASK_IMAGE_QUEUE, GenerateImageItem
+from base import (
+    SERVER_IP,
+    SERVER_PORT,
+    TASK_IMAGE_QUEUE,
+    GenerateImageItem,
+    G4F_VERSION,
+)
 from api_task_func import generate_image_queue
 
 
 app = FastAPI()
+templates = Jinja2Templates(directory="templates")
 
 
 def init_app():
@@ -15,8 +23,10 @@ def init_app():
 
 
 @app.get("/")
-async def home():
-    return "Hello"
+async def home(request: Request):
+    return templates.TemplateResponse(
+        "index.html", {"request": request, "g4f_version": G4F_VERSION}
+    )
 
 
 @app.post("/generate")

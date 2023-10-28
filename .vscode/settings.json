@@ -15,6 +15,7 @@
     "ngrok",
     "pydantic",
     "stabilityai",
+    "templating",
     "toolbelt",
     "uvicorn",
     "wavfile",

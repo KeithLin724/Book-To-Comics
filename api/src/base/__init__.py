@@ -3,6 +3,7 @@ from model import TextToImage
 import os
 from rq import Queue
 from redis import Redis
+import g4f
 
 REDIS_CONNECT = Redis(host="localhost", port=6379)
 TASK_IMAGE_QUEUE = Queue("generate-image-queue", connection=REDIS_CONNECT)
@@ -15,6 +16,7 @@ text_to_image_model.load()
 
 FOLDER_PATH = os.getcwd()
 IMAGE_FOLDER_PATH = os.path.join(FOLDER_PATH, "images")
+G4F_VERSION = g4f.version
 
 
 def handle_user_folder(user_name) -> str:
