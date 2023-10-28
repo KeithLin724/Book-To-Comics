@@ -225,8 +225,14 @@ html {
   cursor: pointer;
   background-color: rgba(0, 0, 0, 0.2);
 }
+
 @media (max-width: 576px) {
   .contacts_card {
     margin-bottom: 15px !important;
   }
+}
+
+.image_class {
+  width: 200px; /* Set the desired width */
+  height: auto; /* Automatically adjust the height to maintain aspect ratio */
 }

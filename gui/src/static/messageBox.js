@@ -101,6 +101,12 @@ $(document).ready(() => {
     document
       .getElementById("messageFormeight")
       .insertAdjacentHTML("beforeend", botHtml);
+
+    // const image = document.getElementById("image");
+    // if (image !== null) {
+    //   image.style.width = "200px";
+    //   image.style.height = "auto";
+    // }
   }
 
   /**
@@ -150,7 +156,7 @@ $(document).ready(() => {
   function imageHandler(response) {
     return response.blob().then((imageBlob) => {
       const imgUrl = URL.createObjectURL(imageBlob);
-      const imageHtml = `<img id="image" src="${imgUrl}" alt="Received Image">`;
+      const imageHtml = `<img src="${imgUrl}" alt="Received Image" class="image_class">`;
 
       return putMessage(imageHtml, get_time());
     });
