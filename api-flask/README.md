@@ -1,14 +1,11 @@
 # API-server
 ## Written BY KYLiN
 
-
-## This server is fastAPI
 ---
 ## Update list 
 - put to test to generate 
 
 - use FastAPI
-- https://fastapi.tiangolo.com/
 
 
 ---
