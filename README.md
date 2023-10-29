@@ -59,3 +59,9 @@ celery -A api_server worker --loglevel=info
 
 sudo service redis-server stop
 ```
+
+llm run in teacher server 
+- https://ai.plainenglish.io/running-llms-on-your-personal-pc-a-cost-free-guide-to-unleashing-their-potential-1bbbbbecb2a
+- https://huggingface.co/tatsu-lab/alpaca-7b-wdiff/tree/main
+  
+- https://aituts.com/local-llms/

@@ -18,7 +18,7 @@ redis_conn = Redis()
 def init():
     global SERVER_URL
     data_json = load_json_from_file("./server_data.json")
-    ip, port = data_json["IP"], data_json["port"]
+    ip, port = data_json["ip"], data_json["port"]
 
     SERVER_URL = f"http://{ip}:{port}"
 
@@ -185,4 +185,4 @@ def image_result():
 
 if __name__ == "__main__":
     init()
-    app.run(host="0.0.0.0", port=CLIENT_PORT, debug=True)
+    app.run(host="0.0.0.0", port=CLIENT_PORT)  # , debug=True
