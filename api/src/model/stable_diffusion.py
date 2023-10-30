@@ -4,12 +4,12 @@ from PIL.Image import Image
 import pickle
 import asyncio
 
-"""
-The `TextToImage` class uses the Stable Diffusion model to generate an image based on a given prompt.
-"""
-
 
 class TextToImage:
+    """
+    The `TextToImage` class uses the Stable Diffusion model to generate an image based on a given prompt.
+    """
+
     def __init__(self) -> None:
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
