@@ -1,5 +1,6 @@
 import g4f
 import asyncio
+from enum import Enum
 
 # https://myapollo.com.tw/blog/begin-to-asyncio/
 
@@ -8,6 +9,10 @@ class TextGenerator:
     """
     The `TextGenerator` class is a Python class that generates text using the GPT-4 model and multiple
     providers asynchronously."""
+
+    class MessageState(Enum):
+        ok = "OK"
+        err = "ERR"
 
     G4F_VERSION = g4f.version
 
