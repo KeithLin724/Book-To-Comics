@@ -19,7 +19,8 @@
     "toolbelt",
     "uvicorn",
     "wavfile",
-    "werkzeug"
+    "werkzeug",
+    "Yqcloud"
   ],
   "workbench.colorCustomizations": {
     "activityBar.activeBackground": "#1f6fd0",

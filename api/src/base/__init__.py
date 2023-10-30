@@ -1,5 +1,5 @@
 import socket
-from model import TextToImage
+from model import TextToImage, TextGenerator
 import os
 from rq import Queue
 from redis import Redis
@@ -14,6 +14,8 @@ SERVER_PORT = 5000
 
 text_to_image_model = TextToImage()
 text_to_image_model.load()
+
+text_generator_model = TextGenerator()
 
 FOLDER_PATH = os.getcwd()
 IMAGE_FOLDER_PATH = os.path.join(FOLDER_PATH, "images")

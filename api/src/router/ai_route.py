@@ -10,6 +10,7 @@ from base import (
     SERVER_IP,
     SERVER_PORT,
     text_to_image_model,
+    text_generator_model,
     IMAGE_FOLDER_PATH,
     REDIS_CONNECT,
     # about the post Item
@@ -38,16 +39,18 @@ async def chat_to_ai(chat_json: ChatItem):
     :return: a dictionary with a key "result" and the value being the result of the asynchronous call to
     the `g4f.ChatCompletion.create_async` method.
     """
-    reply_message = g4f.ChatCompletion.create_async(
-        model=chat_json.model,
-        messages=[
-            {
-                "role": "user",
-                "content": chat_json.message,
-            }
-        ],
-    )
-    return {"message": await reply_message}
+    # reply_message = g4f.ChatCompletion.create_async(
+    #     model=chat_json.model,
+    #     messages=[
+    #         {
+    #             "role": "user",
+    #             "content": chat_json.message,
+    #         }
+    #     ],
+    # )
+
+    reply_message = await text_generator_model.get_generate(prompt=chat_json.message)
+    return {"message": reply_message}
 
 
 @ai_router.post("/generate-redis")
