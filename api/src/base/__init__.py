@@ -3,7 +3,6 @@ from model import TextToImage, TextGenerator
 import os
 from rq import Queue
 from redis import Redis
-import g4f
 from func import api_json
 
 REDIS_CONNECT = Redis(host="localhost", port=6379)
@@ -19,7 +18,7 @@ text_generator_model = TextGenerator()
 
 FOLDER_PATH = os.getcwd()
 IMAGE_FOLDER_PATH = os.path.join(FOLDER_PATH, "images")
-G4F_VERSION = g4f.version
+G4F_VERSION = TextGenerator.G4F_VERSION
 
 
 def save_server_data_to_json():

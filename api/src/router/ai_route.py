@@ -20,8 +20,6 @@ from base import (
 )
 
 from func import api_func
-
-# from api.src.api_task_func import generate_image_queue
 import io
 
 ai_router = APIRouter()
@@ -30,25 +28,16 @@ ai_router = APIRouter()
 @ai_router.post("/chat")
 async def chat_to_ai(chat_json: ChatItem):
     """
-    The function `chat_to_ai` takes a JSON object representing a chat conversation and uses the OpenAI
-    GPT-3 model to generate a reply message based on the given prompt.
+    The function `chat_to_ai` takes a JSON object representing a chat message, generates a reply using a
+    text generation model, and returns the reply as a JSON object.
 
-    :param chat_json: The `chat_json` parameter is a `ChatItem` object that contains the necessary
-    information for the chat conversation. It has the following attributes:
+    :param chat_json: The `chat_json` parameter is a JSON object that contains information about the
+    chat message. It typically includes the message content and any other relevant details such as the
+    sender's name or ID
     :type chat_json: ChatItem
-    :return: a dictionary with a key "result" and the value being the result of the asynchronous call to
-    the `g4f.ChatCompletion.create_async` method.
+    :return: a dictionary with a single key-value pair. The key is "message" and the value is the
+    generated reply message from the AI model.
     """
-    # reply_message = g4f.ChatCompletion.create_async(
-    #     model=chat_json.model,
-    #     messages=[
-    #         {
-    #             "role": "user",
-    #             "content": chat_json.message,
-    #         }
-    #     ],
-    # )
-
     reply_message = await text_generator_model.get_generate(prompt=chat_json.message)
     return {"message": reply_message}
 

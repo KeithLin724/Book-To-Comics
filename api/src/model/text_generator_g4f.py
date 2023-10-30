@@ -5,6 +5,10 @@ import asyncio
 
 
 class TextGenerator:
+    """
+    The `TextGenerator` class is a Python class that generates text using the GPT-4 model and multiple
+    providers asynchronously."""
+
     G4F_VERSION = g4f.version
 
     def __init__(self) -> None:
@@ -44,7 +48,7 @@ class TextGenerator:
             # print(f"{provider.__name__}:", response)
             return "OK", provider.__name__, response
         except Exception as e:
-            return "OK", provider.__name__, e
+            return "ERR", provider.__name__, e
 
     async def get_waiting(self, task_list: list):
         """
@@ -67,13 +71,23 @@ class TextGenerator:
             # Check the result of the first completed task
             result = await completed_task.pop()
 
-            # print("Completed task:", result)
             return result, pending_tasks
         except asyncio.CancelledError as e:
             print(e)
             pass
 
     async def get_generate(self, prompt: str):
+        """
+        The function `get_generate` takes a prompt as input and runs multiple providers asynchronously,
+        returning the first successful result or the first error encountered.
+
+        :param prompt: The `prompt` parameter is a string that represents the input prompt for
+        generating text. It is used as an input for each provider in the `_provide` list
+        :type prompt: str
+        :return: a tuple containing the provider name and the generated message. If all tasks encounter
+        an error, the function returns the first error encountered. If there are no pending tasks, an
+        empty string is returned.
+        """
         pending_tasks = [
             asyncio.create_task(
                 self.run_provider(
@@ -96,10 +110,10 @@ class TextGenerator:
             if state == "OK" and msg != "":
                 for task in pending_tasks:
                     if task is not None:
-                        # print(task)
                         task.cancel()
-                        # print(task)
+
                 return provider_name, msg
+
             elif state == "ERR":
                 # Handle "bad_news" condition, log the error, and continue waiting for other tasks
                 first_result = result
@@ -107,14 +121,13 @@ class TextGenerator:
         return first_result
 
     async def generate(self, prompt):
+        """
+        The function "generate" is an asynchronous function that takes a prompt as input and returns the
+        result of calling the "get_generate" function with the prompt as an argument.
+
+        :param prompt: The prompt is the input text or sentence that you want to use as a starting point
+        for generating the output
+        :return: The result of the `get_generate` method is being returned.
+        """
         result = await self.get_generate(prompt=prompt)
         return result
-
-
-# async def main():
-#     a = TextGenerator()
-#     res = await a.get_generate("hello")
-#     print(res)
-
-
-# asyncio.run(main())
