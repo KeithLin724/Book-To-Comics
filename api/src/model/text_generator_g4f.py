@@ -99,7 +99,7 @@ class TextGenerator:
         ]
 
         first_result = None
-        result, pending_tasks = await self.get_waiting(pending_tasks)
+        # result, pending_tasks = await self.get_waiting(pending_tasks)
         for _ in range(len(pending_tasks)):
             result, pending_tasks = await self.get_waiting(pending_tasks)
             state, provider_name, msg = result
@@ -107,17 +107,18 @@ class TextGenerator:
             if pending_tasks is None:
                 return ""
 
+            # is ok
             if state == "OK" and msg != "":
                 for task in pending_tasks:
                     task.cancel()
 
                 return provider_name, msg
 
+            # handel error
             elif state == "ERR":
-                # Handle "bad_news" condition, log the error, and continue waiting for other tasks
                 first_result = result
 
-        return first_result
+        return first_result[-1]
 
     async def generate(self, prompt):
         """
