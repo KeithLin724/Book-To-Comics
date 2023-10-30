@@ -48,7 +48,7 @@ class TextGenerator:
             # print(f"{provider.__name__}:", response)
             return "OK", provider.__name__, response
         except Exception as e:
-            return "ERR", provider.__name__, e
+            return "ERR", provider.__name__, str(e)
 
     async def get_waiting(self, task_list: list):
         """
@@ -109,8 +109,7 @@ class TextGenerator:
 
             if state == "OK" and msg != "":
                 for task in pending_tasks:
-                    if task is not None:
-                        task.cancel()
+                    task.cancel()
 
                 return provider_name, msg
 
