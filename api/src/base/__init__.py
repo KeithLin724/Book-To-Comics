@@ -1,9 +1,9 @@
 import socket
-from model import TextToImage
+from model import TextToImage, TextGenerator
 import os
 from rq import Queue
 from redis import Redis
-import g4f
+from func import api_json
 
 REDIS_CONNECT = Redis(host="localhost", port=6379)
 TASK_IMAGE_QUEUE = Queue("generate-image-queue", connection=REDIS_CONNECT)
@@ -14,9 +14,20 @@ SERVER_PORT = 5000
 text_to_image_model = TextToImage()
 text_to_image_model.load()
 
+text_generator_model = TextGenerator()
+
 FOLDER_PATH = os.getcwd()
 IMAGE_FOLDER_PATH = os.path.join(FOLDER_PATH, "images")
-G4F_VERSION = g4f.version
+G4F_VERSION = TextGenerator.G4F_VERSION
+
+
+def save_server_data_to_json():
+    data = {"ip": SERVER_IP, "port": SERVER_PORT}
+    api_json.json_to_file(data, "server_data.json")
+    return
+
+
+save_server_data_to_json()
 
 
 def handle_user_folder(user_name) -> str:

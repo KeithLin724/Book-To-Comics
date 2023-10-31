@@ -19,6 +19,7 @@ templates = Jinja2Templates(directory="templates")
 def init_app():
     app.include_router(router=router.test_router)
     app.include_router(router=router.ai_router)
+
     return
 
 
