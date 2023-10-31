@@ -1,6 +1,8 @@
 # 忽略"myfolder"文件夹及其所有内容
 api_server_venv
 api_server_linux
+gui_venv
+gui_venv_linux
 # .vscode
 api/src/images
 api-flask/src/image
