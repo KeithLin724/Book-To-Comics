@@ -1,10 +1,13 @@
 from fastapi import APIRouter
 from fastapi.responses import FileResponse, StreamingResponse
-import g4f
+
 
 import uuid
 import datetime
 import os
+import logging
+
+logger = logging.getLogger("uvicorn")
 
 from base import (
     SERVER_IP,
@@ -38,7 +41,10 @@ async def chat_to_ai(chat_json: ChatItem):
     :return: a dictionary with a single key-value pair. The key is "message" and the value is the
     generated reply message from the AI model.
     """
-    reply_message = await text_generator_model.get_generate(prompt=chat_json.message)
+    provider, reply_message = await text_generator_model.generate(
+        prompt=chat_json.message
+    )
+    logger.info(f"provider :{provider}")
     return {"message": reply_message}
 
 

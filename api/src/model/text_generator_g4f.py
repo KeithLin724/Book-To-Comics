@@ -134,5 +134,6 @@ class TextGenerator:
         for generating the output
         :return: The result of the `get_generate` method is being returned.
         """
-        result = await self.get_generate(prompt=prompt)
-        return result
+
+        provider, msg = await self.get_generate(prompt=prompt)
+        return provider, msg
