@@ -1,35 +1,42 @@
 # API-server
+
 ## Written BY KYLiN
 
-
 ## This server is fastAPI
+
 ---
-## Update list 
-- put to test to generate 
+
+## Update list
+
+- put to test to generate
 
 - use FastAPI
 - https://fastapi.tiangolo.com/
 
+- Docker-Compose : https://www.youtube.com/watch?v=gGkUu_T9848
+- Docker-Compose in project(development): https://www.youtube.com/watch?v=CzAyaSolZjY
+- Docker-Compose in project(product): https://www.youtube.com/watch?v=8kOubC4sYNk
+- Docker-Compose in project(push to hub): https://www.youtube.com/watch?v=bcYmfHOrOPM
 
 ---
 
-- Text to speech 
-- summery function  : https://www.youtube.com/watch?v=TsfLm5iiYb4&t=3s
+- Text to speech
+- summery function : https://www.youtube.com/watch?v=TsfLm5iiYb4&t=3s
 
-- free gpu 
+- free gpu
 - https://www.youtube.com/watch?v=wBCEDCiQh3Q
 
 - install ngrok
 
 python package
+
 ```
 pip freeze > requirements.txt
 
-# install 
+# install
 
 pip install -r requirements.txt
 ```
-
 
 ```
 - RabbitMQ
@@ -47,6 +54,7 @@ https://huggingface.co/blog/llama2
 ```
 
 ### docker command with gpu
+
 ```
 docker run --name api_server_image --gpus '"device=0"' nvidia/cuda
 
@@ -60,7 +68,7 @@ docker-compose -f ./redis-docker-compose.yml up
 rq worker generate-image-queue
 ```
 
-#### python venv 
+#### python venv
 
 - https://zhuanlan.zhihu.com/p/341481537
 - ./api_server_venv/Scripts/Activate.ps1
