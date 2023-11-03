@@ -18,6 +18,8 @@
 - Docker-Compose in project(product): https://www.youtube.com/watch?v=8kOubC4sYNk
 - Docker-Compose in project(push to hub): https://www.youtube.com/watch?v=bcYmfHOrOPM
 
+- Docker-Compose init easy : https://www.youtube.com/watch?v=iqrS7Q174Ac
+
 ---
 
 - Text to speech

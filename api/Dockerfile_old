@@ -23,7 +23,7 @@ COPY . ./api
 RUN pip install --no-cache-dir -r ./api/requirements.txt
 
 
-CMD [ "python", ".api/src/api_server.py" ]
+# CMD [ "python", ".api/src/api_server.py" ]
 
 # Copy your Python scripts or project files to the container
 # COPY your_script.py /app/
