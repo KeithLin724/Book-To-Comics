@@ -5,9 +5,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 import uuid
 import datetime
 import os
-import logging
 
-logger = logging.getLogger("uvicorn")
 
 from base import (
     SERVER_IP,
@@ -16,6 +14,7 @@ from base import (
     text_generator_model,
     IMAGE_FOLDER_PATH,
     REDIS_CONNECT,
+    LOGGER,
     # about the post Item
     ChatItem,
     GenerateImageItem,
@@ -44,7 +43,7 @@ async def chat_to_ai(chat_json: ChatItem):
     provider, reply_message = await text_generator_model.generate(
         prompt=chat_json.message
     )
-    logger.info(f"provider :{provider}")
+    LOGGER.info(f"provider :{provider}")
     return {"message": reply_message}
 
 

@@ -9,6 +9,8 @@ from base import (
     TASK_IMAGE_QUEUE,
     GenerateImageItem,
     G4F_VERSION,
+    SERVER_URL,
+    LOGGER,
 )
 from api_task_func import generate_image_queue
 
@@ -25,8 +27,14 @@ def init_app():
 
 @app.get("/")
 async def home(request: Request):
+    LOGGER.info(SERVER_URL)
     return templates.TemplateResponse(
-        "index.html", {"request": request, "g4f_version": G4F_VERSION}
+        "index.html",
+        {
+            "request": request,
+            "g4f_version": G4F_VERSION,
+            "url_link": SERVER_URL,
+        },
     )
 
 
