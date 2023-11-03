@@ -20,6 +20,10 @@
 
 - Docker-Compose init easy : https://www.youtube.com/watch?v=iqrS7Q174Ac
 
+```
+uvicorn api_server:app --reload --port 5000 --host 0.0.0.0
+```
+
 ---
 
 - Text to speech

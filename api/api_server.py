@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
-import uvicorn
+
+# import uvicorn
 import router
 from base import (
     SERVER_IP,
@@ -14,12 +15,11 @@ from api_task_func import generate_image_queue
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
+app.include_router(router=router.test_router)
+app.include_router(router=router.ai_router)
 
 
 def init_app():
-    app.include_router(router=router.test_router)
-    app.include_router(router=router.ai_router)
-
     return
 
 
@@ -55,4 +55,4 @@ async def generate_image_request(generate_image_json: GenerateImageItem):
 # https://blog.csdn.net/qq_33801641/article/details/120320780
 if __name__ == "__main__":
     init_app()
-    uvicorn.run(app, host=SERVER_IP, port=SERVER_PORT)
+    # uvicorn.run(app, host=SERVER_IP, port=SERVER_PORT)

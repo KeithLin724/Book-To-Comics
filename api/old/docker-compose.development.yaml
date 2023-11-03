@@ -2,16 +2,15 @@ version: '3.3'
 
 services:
   api_server:
+    runtime: nvidia  # 使用 NVIDIA Container Toolkit
     build: .
-      # dockerfile: Dockerfile
-    # image: api_server:latest
+
     command: python .api/src/api_server.py
     ports:
       - "5000:5000"
     volumes:
       - .:/api
 
-    runtime: nvidia  # 使用 NVIDIA Container Toolkit
     environment:
       - NVIDIA_VISIBLE_DEVIVES=all
     # command: nvidia-smi
