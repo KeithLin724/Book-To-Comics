@@ -61,6 +61,6 @@ async def generate_image_request(generate_image_json: GenerateImageItem):
 
 
 # https://blog.csdn.net/qq_33801641/article/details/120320780
-if __name__ == "__main__":
-    init_app()
-    # uvicorn.run(app, host=SERVER_IP, port=SERVER_PORT)
+# if __name__ == "__main__":
+#     init_app()
+# uvicorn.run(app, host=SERVER_IP, port=SERVER_PORT)
