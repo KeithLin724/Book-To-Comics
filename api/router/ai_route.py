@@ -10,11 +10,12 @@ import os
 from base import (
     SERVER_IP,
     SERVER_PORT,
-    text_to_image_model,
-    text_generator_model,
     IMAGE_FOLDER_PATH,
     REDIS_CONNECT,
     LOGGER,
+    # about the model
+    text_to_image_model,
+    text_generator_model,
     # about the post Item
     ChatItem,
     GenerateImageItem,
