@@ -1,7 +1,8 @@
 import redis
 
 # Replace these values with your Redis server configuration
-redis_host = "localhost"  # Change this to your Redis server's host
+# redis_host = "localhost"  # Change this to your Redis server's host
+redis_host = "140.113.238.35"  # Change this to your Redis server's host
 redis_port = 6379  # Change this to your Redis server's port
 
 try:
