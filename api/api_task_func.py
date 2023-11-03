@@ -1,4 +1,5 @@
 import requests
+import json
 
 
 def generate_image_queue(connect_path: str, data: dict):
@@ -21,4 +22,4 @@ def generate_image_queue(connect_path: str, data: dict):
         res = requests.post(connect_path, json=data)
         return res
     except Exception as e:
-        return str(e)
+        return json.dumps({"error": str(e)})
