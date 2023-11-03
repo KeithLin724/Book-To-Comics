@@ -5,6 +5,7 @@ from base import (
     SERVER_URL,
 )
 from router import text_to_image_router
+import uvicorn
 
 app = FastAPI()
 app.include_router(router=text_to_image_router)
@@ -18,3 +19,7 @@ async def home():
         "port": SERVER_PORT,
         "url": SERVER_URL,
     }
+
+
+if __name__ == "__main__":
+    uvicorn.run(host=SERVER_IP, port=SERVER_PORT)

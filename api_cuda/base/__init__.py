@@ -28,7 +28,7 @@ def save_server_data_to_json():
         "port": SERVER_PORT,
         "url": SERVER_URL,
     }
-    api_json.json_to_file(data, "server_data.json")
+    api_json.json_to_file(data, "server_data(text_to_image).json")
     return
 
 
