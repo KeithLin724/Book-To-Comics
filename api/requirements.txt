@@ -12,3 +12,4 @@ Pillow
 g4f
 diffusers
 scipy
+apscheduler
