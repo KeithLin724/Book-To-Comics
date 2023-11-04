@@ -11,18 +11,29 @@ from base import (
     G4F_VERSION,
     SERVER_URL,
     LOGGER,
+    save_server_data_to_json,
 )
 from api_task_func import generate_image_queue
+from contextlib import asynccontextmanager
 
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    "open server do"
+    save_server_data_to_json()
+    LOGGER.info(f"server is open , URL :{SERVER_URL}")
+    yield
+    "close server"
+    LOGGER.info(f"server is close")
+    return
+
+
+app = FastAPI(lifespan=lifespan)
+
 templates = Jinja2Templates(directory="templates")
+
 app.include_router(router=router.test_router)
 app.include_router(router=router.ai_router)
-
-
-def init_app():
-    return
 
 
 @app.get("/")
