@@ -2,7 +2,8 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 # from apscheduler.events import EVENT_JOB_ERROR
 
-# from . import LOGGER
+from . import LOGGER
+
 # https://apscheduler.readthedocs.io/en/3.x/userguide.html
 import httpx
 
@@ -34,9 +35,10 @@ class MonitorMicroServer:
             try:
                 async with httpx.AsyncClient() as client:
                     res = await client.get(url)
-                    print(res.status_code)
+
             except Exception as e:
-                print(f"error({task_id}): {str(e)} , micro service is close")
+                # print(f"error({task_id}): {str(e)} , micro service is close")
+                LOGGER.warning(f"error({task_id}): {str(e)} , micro service is close")
                 # LOGGER.warning(f"error({task_id}): {str(e)} , micro service is close")
                 self._micro_service_dict.pop(task_id)
                 self._scheduler.remove_job(task_id)

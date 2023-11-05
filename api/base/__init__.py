@@ -59,7 +59,7 @@ def handle_user_folder(user_name) -> str:
     return path
 
 
-from .message_item import GenerateImageItem, ChatItem, ResultItems
+from .message_item import GenerateImageItem, ChatItem, ResultItems, ConnectPlugItem
 from .server_schedule import MonitorMicroServer
 
 monitor_micro_server = MonitorMicroServer()

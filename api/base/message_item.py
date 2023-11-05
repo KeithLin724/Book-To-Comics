@@ -17,3 +17,8 @@ class ResultItems(BaseModel):
     file_name: str = None
     time: str = None
     request_path: str = None
+
+
+class ConnectPlugItem(BaseModel):
+    type_name: str
+    url: str
