@@ -3,6 +3,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 # from apscheduler.events import EVENT_JOB_ERROR
 
 # from . import LOGGER
+# https://apscheduler.readthedocs.io/en/3.x/userguide.html
 import httpx
 
 
