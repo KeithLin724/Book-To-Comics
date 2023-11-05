@@ -2,7 +2,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 # from apscheduler.events import EVENT_JOB_ERROR
 
-from . import LOGGER
+# from . import LOGGER
 import httpx
 
 
@@ -35,7 +35,8 @@ class MonitorMicroServer:
                     res = await client.get(url)
                     print(res.status_code)
             except Exception as e:
-                LOGGER.warning(f"error({task_id}): {str(e)} , micro service is close")
+                print(f"error({task_id}): {str(e)} , micro service is close")
+                # LOGGER.warning(f"error({task_id}): {str(e)} , micro service is close")
                 self._micro_service_dict.pop(task_id)
                 self._scheduler.remove_job(task_id)
 
@@ -80,6 +81,8 @@ class MonitorMicroServer:
 #     )
 
 #     await asyncio.sleep(10)
+#     url = testing.get_micro_service_url("testing")
+#     print(url)
 #     testing.close(need_wait_job=False)
 #     return
 
