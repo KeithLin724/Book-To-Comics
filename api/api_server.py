@@ -33,7 +33,7 @@ app = FastAPI(lifespan=lifespan)
 templates = Jinja2Templates(directory="templates")
 
 app.include_router(router=router.test_router)
-app.include_router(router=router.ai_router)
+app.include_router(router=router.router_center)
 
 
 @app.get("/")
