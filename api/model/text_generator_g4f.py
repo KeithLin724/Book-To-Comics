@@ -117,6 +117,8 @@ class TextGenerator:
                 for task in pending_tasks:
                     task.cancel()
 
+                # [task.cancel() for task in pending_tasks]
+
                 return provider_name, msg
 
             # handel error
