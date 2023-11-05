@@ -27,7 +27,7 @@ SERVER_PORT = 5000
 SERVER_URL = f"http://{SERVER_IP}:{SERVER_PORT}"
 
 text_to_image_model = TextToImage()
-text_to_image_model.load()
+
 
 text_generator_model = TextGenerator()
 
@@ -60,3 +60,20 @@ def handle_user_folder(user_name) -> str:
 
 
 from .message_item import GenerateImageItem, ChatItem, ResultItems
+from .server_schedule import MonitorMicroServer
+
+monitor_micro_server = MonitorMicroServer()
+
+
+async def server_init():
+    save_server_data_to_json()
+    text_to_image_model.load()
+    monitor_micro_server.start()
+    LOGGER.info(f"server is open , URL :{SERVER_URL}")
+    return
+
+
+async def server_close():
+    monitor_micro_server.close(out=LOGGER.info)
+    LOGGER.info(f"server is close")
+    return

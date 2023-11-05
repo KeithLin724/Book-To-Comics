@@ -11,7 +11,8 @@ from base import (
     G4F_VERSION,
     SERVER_URL,
     LOGGER,
-    save_server_data_to_json,
+    server_init,
+    server_close,
 )
 from api_task_func import generate_image_queue
 from contextlib import asynccontextmanager
@@ -20,11 +21,10 @@ from contextlib import asynccontextmanager
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     "open server do"
-    save_server_data_to_json()
-    LOGGER.info(f"server is open , URL :{SERVER_URL}")
+    await server_init()
     yield
     "close server"
-    LOGGER.info(f"server is close")
+    await server_close()
     return
 
 

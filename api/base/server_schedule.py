@@ -62,8 +62,12 @@ class MonitorMicroServer:
 
         self._micro_service_dict |= {micro_server_name: micro_server_url}
 
-    def close(self, need_wait_job: bool = True):
-        self._scheduler.print_jobs()
+    def close(self, need_wait_job: bool = True, out=print):
+        # self._scheduler.print_jobs()
+        jobs = self._scheduler.get_jobs()
+        display = ", ".join(jobs) if len(jobs) != 0 else "empty"
+        out(f"schedule Jobs : {display}")
+        self._scheduler.remove_all_jobs()
         self._scheduler.shutdown(wait=need_wait_job)
 
     def get_micro_service_url(self, micro_service_name) -> str:
