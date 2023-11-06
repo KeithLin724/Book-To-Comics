@@ -4,11 +4,12 @@ from base import (
     SERVER_PORT,
     SERVER_URL,
 )
-from router import text_to_image_router
+from router import text_to_image_router, receiver_router
 import uvicorn
 
 app = FastAPI()
 app.include_router(router=text_to_image_router)
+app.include_router(router=receiver_router)
 
 
 @app.get("/")
