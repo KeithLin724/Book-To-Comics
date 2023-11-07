@@ -19,7 +19,6 @@ IMAGE_FOLDER_PATH = os.path.join(FOLDER_PATH, "images")
 LOGGER = logging.getLogger("uvicorn")
 
 text_to_image_model = TextToImage()
-text_to_image_model.load()
 
 
 def save_server_data_to_json():
@@ -30,9 +29,6 @@ def save_server_data_to_json():
     }
     api_json.json_to_file(data, "server_data(text_to_image).json")
     return
-
-
-save_server_data_to_json()
 
 
 def handle_user_folder(user_name) -> str:
@@ -48,3 +44,15 @@ def handle_user_folder(user_name) -> str:
         os.makedirs(path)
 
     return path
+
+
+async def server_init():
+    save_server_data_to_json()
+    text_to_image_model.load()
+    LOGGER.info(f"server is open, URL : {SERVER_URL}")
+    return
+
+
+async def server_close():
+    LOGGER.info(f"server is close")
+    return

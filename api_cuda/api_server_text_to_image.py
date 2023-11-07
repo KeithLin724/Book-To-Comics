@@ -1,13 +1,22 @@
 from fastapi import FastAPI
-from base import (
-    SERVER_IP,
-    SERVER_PORT,
-    SERVER_URL,
-)
+from base import SERVER_IP, SERVER_PORT, SERVER_URL, server_init, server_close
+
 from router import text_to_image_router, receiver_router
 import uvicorn
+from contextlib import asynccontextmanager
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    "open server do"
+    await server_init()
+    yield
+    "close server"
+    await server_close()
+    return
+
+
+app = FastAPI(lifespan=lifespan)
 app.include_router(router=text_to_image_router)
 app.include_router(router=receiver_router)
 
