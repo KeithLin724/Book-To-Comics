@@ -16,7 +16,7 @@ async def lifespan(app: FastAPI):
     return
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(title="Text to image server", lifespan=lifespan)
 app.include_router(router=text_to_image_router)
 app.include_router(router=receiver_router)
 
