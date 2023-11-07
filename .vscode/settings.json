@@ -24,5 +24,7 @@
     "werkzeug",
     "Yqcloud"
   ],
-  "peacock.color": "#1857a4"
+  "peacock.color": "#1857a4",
+  "docwriter.language": "English",
+  "docwriter.style": "NumPy"
 }
