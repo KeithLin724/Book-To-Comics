@@ -13,22 +13,11 @@ from base import (
     REDIS_CONNECT,
     IMAGE_FOLDER_PATH,
     api_func,
+    GenerateImageItem,
+    ResultItems,
 )
 
 text_to_image_router = APIRouter()
-
-
-class GenerateImageItem(BaseModel):
-    name: str = "tmp"
-    prompt: str
-
-
-class ResultItems(BaseModel):
-    unique_id: str
-    file_path: str = None
-    file_name: str = None
-    time: str = None
-    request_path: str = None
 
 
 @text_to_image_router.post("/generate-redis")

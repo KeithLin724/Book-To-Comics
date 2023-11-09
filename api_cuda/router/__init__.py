@@ -1,2 +1,2 @@
-from . import text_to_image_router
-from . import receiver_router
+from .text_to_image_router import text_to_image_router
+from .receiver_router import receiver_router

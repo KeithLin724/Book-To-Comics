@@ -16,7 +16,7 @@ class MonitorMicroServer:
     def start(self):
         self._scheduler.start()
 
-    def _make_monitor(self, url: str, task_id: str):
+    def _make_monitor(self, url: str, task_id: str, is_alive_root: str):
         """
         The `_make_monitor` function creates an asynchronous function `get_alive` that sends a GET request
         to a specified URL and prints the response status code, or an error message if the request fails.
@@ -34,7 +34,7 @@ class MonitorMicroServer:
         async def get_alive() -> None:
             try:
                 async with httpx.AsyncClient() as client:
-                    res = await client.get(url)
+                    res = await client.get(f"{url}/{is_alive_root}")
 
             except Exception as e:
                 # print(f"error({task_id}): {str(e)} , micro service is close")
@@ -50,25 +50,35 @@ class MonitorMicroServer:
         self,
         micro_server_name: str,
         micro_server_url: str,
+        micro_server_is_alive_root: str,
         second: int = 5,
     ) -> None:
-        """
-        The `add_micro_server` function adds a micro server to a scheduler with a specified name, URL,
-        and interval.
+        """The `add_micro_server` function adds a micro server to a scheduler with a specified name, URL,
+        and interval for checking its availability.
 
-        :param micro_server_name: The `micro_server_name` parameter is a string that represents the name
-        or identifier of the micro server
-        :type micro_server_name: str
-        :param micro_server_url: The `micro_server_url` parameter is a string that represents the URL of
-        the micro server. It is the address where the micro server can be accessed
-        :type micro_server_url: str
-        :param second: The `second` parameter is an optional parameter that specifies the interval in
-        seconds at which the micro server should be monitored. If not provided, it defaults to 5
-        seconds, defaults to 5
-        :type second: int (optional)
+        Parameters
+        ----------
+        micro_server_name : str
+            The `micro_server_name` parameter is a string that represents the name or identifier of the
+        micro server.
+        micro_server_url : str
+            The `micro_server_url` parameter is the URL of the micro server that you want to add to the
+        scheduler. It is a string that represents the address of the micro server.
+        micro_server_is_alive_root : str
+            The parameter `micro_server_is_alive_root` is the root endpoint or URL path that indicates
+        whether the micro server is alive or not. It is used by the monitoring task to check the health
+        status of the micro server.
+        second : int, optional
+            The `second` parameter is an optional parameter that specifies the interval in seconds at which
+        the micro server should be monitored. If not provided, it defaults to 5 seconds.
+
         """
         self._scheduler.add_job(
-            self._make_monitor(url=micro_server_url, task_id=micro_server_name),
+            self._make_monitor(
+                url=micro_server_url,
+                task_id=micro_server_name,
+                is_alive_root=micro_server_is_alive_root,
+            ),
             "interval",
             seconds=second,
             id=micro_server_name,
