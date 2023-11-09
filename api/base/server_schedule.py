@@ -37,7 +37,9 @@ class MonitorMicroServer:
                     res = await client.get(f"{url}/{is_alive_root}")
 
             except Exception as e:
-                LOGGER.warning(f"error({task_id}): {str(e)} , micro service is close")
+                LOGGER.warning(
+                    f"micro service ({task_id}) is close, error message: {str(e)}"
+                )
 
                 self._micro_service_dict.pop(task_id)
                 self._scheduler.remove_job(task_id)
