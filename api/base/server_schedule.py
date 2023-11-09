@@ -37,9 +37,8 @@ class MonitorMicroServer:
                     res = await client.get(f"{url}/{is_alive_root}")
 
             except Exception as e:
-                # print(f"error({task_id}): {str(e)} , micro service is close")
                 LOGGER.warning(f"error({task_id}): {str(e)} , micro service is close")
-                # LOGGER.warning(f"error({task_id}): {str(e)} , micro service is close")
+
                 self._micro_service_dict.pop(task_id)
                 self._scheduler.remove_job(task_id)
 
@@ -113,28 +112,36 @@ class MonitorMicroServer:
         self._scheduler.remove_all_jobs()
         self._scheduler.shutdown(wait=need_wait_job)
 
-    def get_micro_service_url(self, micro_service_name) -> str:
-        """
-        The function `get_micro_service_url` returns the URL of a microservice based on its name.
+    def get_micro_service_url(self, micro_service_name: str) -> str:
+        """The function `get_micro_service_url` returns the URL of a microservice based on its name.
 
-        :param micro_service_name: The `micro_service_name` parameter is a string that represents the name
-        of a microservice
-        :return: The method `get_micro_service_url` returns a string, which is the URL of the microservice
-        corresponding to the given `micro_service_name`. If the `micro_service_name` is not found in the
-        `_micro_service_dict`, it returns `None`.
+        Parameters
+        ----------
+        micro_service_name
+            The `micro_service_name` parameter is a string that represents the name of a microservice.
+
+        Returns
+        -------
+            a string, which is the URL of the microservice corresponding to the given micro_service_name. If
+        the micro_service_name is not found in the _micro_service_dict, it returns None.
+
         """
         res = self._micro_service_dict.get(micro_service_name, None)
         return res["url"] if res is not None else None
 
-    def get_micro_service_method(self, micro_service_name) -> str:
-        """
-        The function `get_micro_service_url` returns the URL of a microservice based on its name.
+    def get_micro_service_method(self, micro_service_name: str) -> str:
+        """The function `get_micro_service_method` returns the method associated with a given micro service
+        name from a dictionary.
 
-        :param micro_service_name: The `micro_service_name` parameter is a string that represents the name
-        of a microservice
-        :return: The method `get_micro_service_url` returns a string, which is the URL of the microservice
-        corresponding to the given `micro_service_name`. If the `micro_service_name` is not found in the
-        `_micro_service_dict`, it returns `None`.
+        Parameters
+        ----------
+        micro_service_name
+            The `micro_service_name` parameter is a string that represents the name of a microservice.
+
+        Returns
+        -------
+            The method returns a string value.
+
         """
         res = self._micro_service_dict.get(micro_service_name, None)
         return res["method"] if res is not None else None
