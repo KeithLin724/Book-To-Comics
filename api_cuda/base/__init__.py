@@ -68,6 +68,7 @@ async def server_init():
 
     if not os.path.exists(IMAGE_FOLDER_PATH):
         os.makedirs(IMAGE_FOLDER_PATH)
+
     LOGGER.info(f"server is open, URL : {SERVER_URL}")
     return
 
