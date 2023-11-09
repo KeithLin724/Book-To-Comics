@@ -129,7 +129,7 @@ class MonitorMicroServer:
         res = self._micro_service_dict.get(micro_service_name, None)
         return res["url"] if res is not None else None
 
-    def get_micro_service_method(self, micro_service_name: str) -> str:
+    def get_micro_service_method_name(self, micro_service_name: str) -> str:
         """The function `get_micro_service_method` returns the method associated with a given micro service
         name from a dictionary.
 
@@ -146,12 +146,33 @@ class MonitorMicroServer:
         res = self._micro_service_dict.get(micro_service_name, None)
         return res["method"] if res is not None else None
 
+    def get_micro_service_method_url(self, micro_service_name: str) -> str:
+        """The function `get_micro_service_method_url` returns the URL of a microservice method based on the
+        microservice name.
+
+        Parameters
+        ----------
+        micro_service_name : str
+            The `micro_service_name` parameter is a string that represents the name of a microservice.
+
+        Returns
+        -------
+            The method is returning a string that represents the URL of a microservice method.
+
+        """
+        res = self._micro_service_dict.get(micro_service_name, None)
+        url, method_root = res["url"], res["method"]
+        return f"{url}/{method_root}" if res is not None else None
+
     def get_all_micro_service(self):
         """
         The function returns a dictionary containing all microservices.
         :return: The method is returning the `_micro_service_dict` attribute.
         """
         return self._micro_service_dict
+
+    def __contains__(self, key):
+        return key in self._micro_service_dict
 
 
 # testing

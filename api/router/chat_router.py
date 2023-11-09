@@ -23,7 +23,7 @@ async def chat_to_ai(chat_json: message_item.ChatItem):
 
     """
     provider, reply_message = await text_generator_model.generate(
-        prompt=chat_json.message
+        prompt=chat_json.prompt
     )
     LOGGER.info(f"provider :{provider}")
     return {"message": reply_message}

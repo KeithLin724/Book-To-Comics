@@ -1,18 +1,26 @@
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import JSONResponse
+import json
+import httpx
 
 # import uvicorn
 import router
 from base import (
     SERVER_IP,
     SERVER_PORT,
-    TASK_IMAGE_QUEUE,
-    GenerateImageItem,
-    G4F_VERSION,
     SERVER_URL,
+    # redis queue
+    TASK_IMAGE_QUEUE,
+    # Item
+    GenerateImageItem,
+    GenerateServiceItem,
+    G4F_VERSION,
     LOGGER,
+    # server lifespan
     server_init,
     server_close,
+    monitor_micro_server,
 )
 from api_task_func import generate_image_queue
 from contextlib import asynccontextmanager
@@ -47,6 +55,74 @@ async def home(request: Request):
             "url_link": SERVER_URL,
         },
     )
+
+
+@app.post("/generate_service")
+async def generate_request_to_micro_service(generate_service: GenerateServiceItem):
+    """The function `generate_request_to_micro_service` generates a request to a microservice based on the
+    provided `GenerateServiceItem` object.
+
+    Parameters
+    ----------
+    generate_service : GenerateServiceItem
+        The `generate_service` parameter is an instance of the `GenerateServiceItem` class. It contains the
+    following attributes:
+
+    Returns
+    -------
+        The function `generate_request_to_micro_service` returns different values depending on the
+    conditions:
+
+    """
+    json_data = {
+        "name": generate_service.name,
+        "prompt": generate_service.prompt,
+    }
+
+    if generate_service.type_service == "chat":
+        async with httpx.AsyncClient() as client:
+            response = await client.post(f"{SERVER_URL}/chat", json=json_data)
+
+        return JSONResponse(json.loads(response.content))
+
+    if generate_service.type_service in monitor_micro_server:
+        response = await handel_function(generate_service, json_data)
+        return response
+
+    return {"error": f"This service({generate_service.type_service}) is not available"}
+
+
+async def handel_function(generate_service: GenerateServiceItem, json_data: dict):
+    """The function `handel_function` handles a specific type of service called "text_to_image" by
+    enqueueing a job to a task queue and returning the task ID.
+
+    Parameters
+    ----------
+    generate_service : GenerateServiceItem
+        GenerateServiceItem is a class that represents a service to be generated. It has a property called
+    "type_service" which indicates the type of service to be generated.
+    json_data : dict
+        The `json_data` parameter is a dictionary that contains the data needed for the function to
+    generate the desired service. The specific contents of the `json_data` dictionary would depend on
+    the requirements of the `generate_service` and `generate_image_queue` functions.
+
+    Returns
+    -------
+        a dictionary with a key "task_id" and the value being the ID of the job that was enqueued.
+
+    """
+    if generate_service.type_service == "text_to_image":
+        micro_service_method_url = monitor_micro_server.get_micro_service_method_url(
+            micro_service_name=generate_service.type_service,
+        )
+        job = TASK_IMAGE_QUEUE.enqueue(
+            generate_image_queue,
+            micro_service_method_url,
+            json_data,
+        )
+        return {"task_id": job.get_id()}
+
+    return
 
 
 @app.post("/generate")

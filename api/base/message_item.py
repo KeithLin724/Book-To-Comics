@@ -7,8 +7,9 @@ class GenerateImageItem(BaseModel):
 
 
 class ChatItem(BaseModel):
+    name: str = "tmp"
     model: str = "gpt-3.5-turbo"
-    message: str
+    prompt: str
 
 
 class ResultItems(BaseModel):
@@ -24,3 +25,9 @@ class ConnectPlugItem(BaseModel):
     url: str
     check_alive_root: str
     method_root: str
+
+
+class GenerateServiceItem(BaseModel):
+    type_service: str = "chat"
+    name: str = "tmp"
+    prompt: str
