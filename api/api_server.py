@@ -1,8 +1,9 @@
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 import json
 import httpx
+import io
 
 # import uvicorn
 import router
@@ -15,6 +16,7 @@ from base import (
     # Item
     GenerateImageItem,
     GenerateServiceItem,
+    ResultServiceItems,
     G4F_VERSION,
     LOGGER,
     # server lifespan
@@ -100,14 +102,17 @@ async def generate_request_to_micro_service(generate_service: GenerateServiceIte
         return JSONResponse(json.loads(response.content))
 
     if generate_service.type_service in monitor_micro_server:
-        response = await handel_function(generate_service, json_data)
+        response = await handle_request_function(generate_service, json_data)
         return response
 
     return {"error": f"This service({generate_service.type_service}) is not available"}
 
 
-async def handel_function(generate_service: GenerateServiceItem, json_data: dict):
-    """The function `handel_function` handles a specific type of service called "text_to_image" by
+async def handle_request_function(
+    generate_service: GenerateServiceItem,
+    json_data: dict,
+):
+    """The function `handle_request_function` handles a specific type of service called "text_to_image" by
     enqueueing a job to a task queue and returning the task ID.
 
     Parameters
@@ -135,6 +140,52 @@ async def handel_function(generate_service: GenerateServiceItem, json_data: dict
             json_data,
         )
         return {"task_id": job.get_id()}
+
+    return
+
+
+@app.post("/result_service")
+async def request_to_micro_service_get_result(result_service_item: ResultServiceItems):
+    # type_of_service = result_service_item.type_service
+
+    if result_service_item.type_service in monitor_micro_server:
+        response = await handle_request_function(result_service=result_service_item)
+        return response
+
+    return {"error": f"service ({result_service_item.type_service}) is close"}
+
+
+async def handle_request_function(result_service: ResultServiceItems):
+    type_of_service = result_service.type_service
+
+    if type_of_service == "text_to_image":
+        json_data = {
+            "unique_id": result_service.unique_id,
+            "file_path": result_service.file_path,
+        }
+
+        micro_service_url = monitor_micro_server.get_micro_service_url(
+            micro_service_name=type_of_service,
+        )
+
+        # get the result from the micro service
+        async with httpx.AsyncClient() as client:
+            response = await client.post(f"{micro_service_url}/result", json=json_data)
+
+        content_type = response.headers.get("Content-Type")
+
+        # handle the content type
+        if content_type == "image/jpeg":
+            image_bytes = io.BytesIO(response.content)
+            return_response = StreamingResponse(image_bytes, media_type="image/jpeg")
+            response.headers["Content-Disposition"] = response.headers.get(
+                "Content-Disposition", ""
+            )
+
+            return return_response
+
+        # error message
+        return JSONResponse(content=json.loads(response.content))
 
     return
 

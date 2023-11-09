@@ -31,3 +31,12 @@ class GenerateServiceItem(BaseModel):
     type_service: str = "chat"
     name: str = "tmp"
     prompt: str
+
+
+class ResultServiceItems(BaseModel):
+    type_service: str
+    unique_id: str
+    file_path: str = None
+    file_name: str = None
+    time: str = None
+    request_path: str = None
