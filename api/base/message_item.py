@@ -23,3 +23,4 @@ class ConnectPlugItem(BaseModel):
     type_name: str
     url: str
     check_alive_root: str
+    method_root: str

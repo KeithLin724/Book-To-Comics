@@ -20,7 +20,7 @@ from base import (
 text_to_image_router = APIRouter()
 
 
-@text_to_image_router.post("/generate-redis")
+@text_to_image_router.post("/generate_redis")
 async def generate_image(generate_image_json: GenerateImageItem):
     """
     The `generate_image` function takes a user's name and prompt, generates an image based on the

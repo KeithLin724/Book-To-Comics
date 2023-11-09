@@ -51,6 +51,7 @@ class MonitorMicroServer:
         micro_server_name: str,
         micro_server_url: str,
         micro_server_is_alive_root: str,
+        micro_server_method_root: str,
         second: int = 5,
     ) -> None:
         """The `add_micro_server` function adds a micro server to a scheduler with a specified name, URL,
@@ -84,7 +85,12 @@ class MonitorMicroServer:
             id=micro_server_name,
         )
 
-        self._micro_service_dict |= {micro_server_name: micro_server_url}
+        self._micro_service_dict |= {
+            micro_server_name: {
+                "url": micro_server_url,
+                "method": micro_server_method_root,
+            }
+        }
 
     def close(self, need_wait_job: bool = True, out=print):
         """
@@ -117,7 +123,21 @@ class MonitorMicroServer:
         corresponding to the given `micro_service_name`. If the `micro_service_name` is not found in the
         `_micro_service_dict`, it returns `None`.
         """
-        return self._micro_service_dict.get(micro_service_name, None)
+        res = self._micro_service_dict.get(micro_service_name, None)
+        return res["url"] if res is not None else None
+
+    def get_micro_service_method(self, micro_service_name) -> str:
+        """
+        The function `get_micro_service_url` returns the URL of a microservice based on its name.
+
+        :param micro_service_name: The `micro_service_name` parameter is a string that represents the name
+        of a microservice
+        :return: The method `get_micro_service_url` returns a string, which is the URL of the microservice
+        corresponding to the given `micro_service_name`. If the `micro_service_name` is not found in the
+        `_micro_service_dict`, it returns `None`.
+        """
+        res = self._micro_service_dict.get(micro_service_name, None)
+        return res["method"] if res is not None else None
 
     def get_all_micro_service(self):
         """

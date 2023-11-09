@@ -23,6 +23,7 @@ async def connect_plug(connect_plug_item: ConnectPlugItem):
         micro_server_name=connect_plug_item.type_name,
         micro_server_url=connect_plug_item.url,
         micro_server_is_alive_root=connect_plug_item.check_alive_root,
+        micro_server_method_root=connect_plug_item.method_root,
     )
     LOGGER.info(
         f"add new service, name: {connect_plug_item.type_name} , url: {connect_plug_item.url}"
@@ -56,4 +57,5 @@ async def display_micro_service():
         "type_name": "type of provide service",
         "url": "service server URL",
         "check_alive_root": "for sever to check the service is alive",
+        "method_root": "for run api method root",
     }

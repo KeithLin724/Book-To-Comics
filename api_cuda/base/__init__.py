@@ -27,6 +27,7 @@ SERVER_TYPE = {
     "type_name": "text_to_image",
     "url": SERVER_URL,
     "check_alive_root": "is_live",
+    "method_root": "generate_redis",
 }
 
 monitor_server = MonitorServer(
