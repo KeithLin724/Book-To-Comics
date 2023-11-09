@@ -22,7 +22,7 @@ class TextGenerator:
             g4f.Provider.ChatBase,
             g4f.Provider.GptGo,
             g4f.Provider.You,
-            g4f.Provider.Yqcloud,
+            # g4f.Provider.Yqcloud,
         ]
 
     async def run_provider(self, provider: g4f.Provider.BaseProvider, prompt: str):
