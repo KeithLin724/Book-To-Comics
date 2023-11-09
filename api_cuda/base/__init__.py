@@ -65,6 +65,9 @@ async def server_init():
     save_server_data_to_json()
     text_to_image_model.load()
     monitor_server.start()
+
+    if not os.path.exists(IMAGE_FOLDER_PATH):
+        os.makedirs(IMAGE_FOLDER_PATH)
     LOGGER.info(f"server is open, URL : {SERVER_URL}")
     return
 

@@ -149,13 +149,15 @@ async def request_to_micro_service_get_result(result_service_item: ResultService
     # type_of_service = result_service_item.type_service
 
     if result_service_item.type_service in monitor_micro_server:
-        response = await handle_request_function(result_service=result_service_item)
+        response = await handle_request_result_function(
+            result_service=result_service_item
+        )
         return response
 
     return {"error": f"service ({result_service_item.type_service}) is close"}
 
 
-async def handle_request_function(result_service: ResultServiceItems):
+async def handle_request_result_function(result_service: ResultServiceItems):
     type_of_service = result_service.type_service
 
     if type_of_service == "text_to_image":
