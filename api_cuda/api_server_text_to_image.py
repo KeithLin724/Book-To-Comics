@@ -31,5 +31,16 @@ async def home():
     }
 
 
+# 检查是否包含/is_alive路径，如果包含则禁用日志输出
+@app.middleware("http")
+async def filter_routes(request, call_next):
+    if "/is_alive" in request.url.path:
+        return await call_next(request)
+    else:
+        response = await call_next(request)
+        # 这里可以添加自定义的日志输出或其他处理
+        return response
+
+
 if __name__ == "__main__":
     uvicorn.run(app, host=SERVER_IP, port=SERVER_PORT)

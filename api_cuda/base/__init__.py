@@ -63,7 +63,8 @@ def handle_user_folder(user_name) -> str:
 
 async def server_init():
     save_server_data_to_json()
-    text_to_image_model.load()
+    # text_to_image_model.load()
+    await text_to_image_model.load_with_async()
     monitor_server.start()
 
     if not os.path.exists(IMAGE_FOLDER_PATH):
