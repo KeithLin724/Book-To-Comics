@@ -28,10 +28,24 @@ from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    "open server do"
+    """The `lifespan` function is an asynchronous generator that initializes and closes a server for a
+    FastAPI application.
+
+    Parameters
+    ----------
+    app : FastAPI
+        The `app` parameter is of type `FastAPI`. It represents the FastAPI application instance that is
+    being passed to the `lifespan` function.
+
+    Returns
+    -------
+        a generator object.
+
+    """
+    # open server do
     await server_init()
     yield
-    "close server"
+    # close server
     await server_close()
     return
 
