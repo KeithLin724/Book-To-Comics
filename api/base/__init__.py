@@ -5,24 +5,13 @@ from rq import Queue
 from redis import Redis
 from func import api_json
 import logging
+from func import helper
 
 REDIS_CONNECT = Redis(host="localhost", port=6379)
 TASK_IMAGE_QUEUE = Queue("generate-image-queue", connection=REDIS_CONNECT)
 
 
-def get_local_ip():
-    try:
-        # 创建一个临时的套接字连接到一个远程地址，然后获取本地 IP 地址
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))  # 这里的远程地址可以是任意已知 IP 地址和端口
-        local_ip = s.getsockname()[0]
-        s.close()
-        return local_ip
-    except socket.error:
-        return "127.0.0.1"
-
-
-SERVER_IP = get_local_ip()
+SERVER_IP = helper.get_local_ip()
 SERVER_PORT = 5000
 SERVER_URL = f"http://{SERVER_IP}:{SERVER_PORT}"
 
@@ -36,12 +25,6 @@ IMAGE_FOLDER_PATH = os.path.join(FOLDER_PATH, "images")
 G4F_VERSION = TextGenerator.G4F_VERSION
 
 LOGGER = logging.getLogger("uvicorn")
-
-
-def save_server_data_to_json():
-    data = {"ip": SERVER_IP, "port": SERVER_PORT}
-    api_json.json_to_file(data, "server_data.json")
-    return
 
 
 def handle_user_folder(user_name) -> str:
@@ -72,7 +55,7 @@ monitor_micro_server = MonitorMicroServer()
 
 
 async def server_init():
-    save_server_data_to_json()
+    helper.save_server_data_to_json(server_ip=SERVER_IP, server_port=SERVER_PORT)
     text_to_image_model.load()
     monitor_micro_server.start()
     LOGGER.info(f"server is open , URL :{SERVER_URL}")
