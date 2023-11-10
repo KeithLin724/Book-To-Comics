@@ -9,3 +9,4 @@ gui_venv_linux
 **__pycache__/
 # 忽略所有.log文件
 *.log
+**.vscode/
