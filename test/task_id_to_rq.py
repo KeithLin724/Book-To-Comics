@@ -2,6 +2,7 @@ import redis
 from rq.job import Job
 import asyncio
 import time
+import json
 
 redis_conn = redis.Redis(host="140.113.238.35", port=6379)
 
@@ -27,6 +28,7 @@ async def main():
     # queue = Queue(connection=redis_conn)
     result = await get_job_result(job_id=job_id)
     # 输出任务的结果
+    result = json.loads(result.content)
     print("Task result:", result)
     return
 
