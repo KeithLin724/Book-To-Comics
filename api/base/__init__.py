@@ -57,7 +57,7 @@ monitor_micro_server = MonitorMicroServer()
 
 async def server_init():
     helper.save_server_data_to_json(server_ip=SERVER_IP, server_port=SERVER_PORT)
-    text_to_image_model.load()
+    # text_to_image_model.load()
     monitor_micro_server.start()
     LOGGER.info(f"server is open , URL :{SERVER_URL}")
     return
