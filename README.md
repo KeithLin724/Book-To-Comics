@@ -8,7 +8,10 @@
   - https://reflex.dev/docs/getting-started/introduction/ 
 
 prompt
+```
 "if this text , generate iron man, is generate image message? return a prompt if is a generated message, please only return a JSON format {generate: true or false, prompt: ......}"
+```
+
 ---
 
 link: 
