@@ -41,7 +41,7 @@ def chat_mode(prompt: str):
     url = "/".join([SERVER_URL, "chat"])
     try:
         # 发出 GET 请求
-        response = requests.post(url, json={"message": prompt})
+        response = requests.post(url, json={"prompt": prompt})
 
         # 检查响应状态码
         if response.status_code == 200:
