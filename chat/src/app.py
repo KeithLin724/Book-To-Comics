@@ -5,9 +5,12 @@ from redis import Redis
 
 import logging
 import io
+import os
 
 from api_json import load_json_from_file
+from dotenv import load_dotenv
 
+load_dotenv()
 
 app = Flask(__name__)
 CLIENT_PORT = 7000
@@ -17,11 +20,9 @@ redis_conn = Redis()
 
 def init():
     global SERVER_URL
-    data_json = load_json_from_file("./server_data.json")
-    ip, port = data_json["ip"], data_json["port"]
+    ip, port = os.getenv("SERVER_IP"), os.getenv("SERVER_PORT")
 
     SERVER_URL = f"http://{ip}:{port}"
-
     return
 
 
