@@ -25,6 +25,9 @@ sudo docker-compose logs
 
 # shutdown
 sudo docker-compose down 
+
+# remove the <none> images
+sudo docker image prune 
 ```
 
 ### save python package

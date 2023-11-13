@@ -13,3 +13,4 @@ g4f
 diffusers
 scipy
 apscheduler
+python-dotenv
