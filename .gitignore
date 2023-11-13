@@ -4,7 +4,10 @@ api_server_linux
 gui_venv
 gui_venv_linux
 # .vscode
-api/src/images
-api-flask/src/image
+**images
+**image
+**__pycache__/
 # 忽略所有.log文件
 *.log
+**.vscode/
+.vscode/settings.json

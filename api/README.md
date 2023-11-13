@@ -2,34 +2,32 @@
 
 ## Written BY KYLiN
 
-## This server is fastAPI
 
----
+
+This server is fastAPI to build it 
 
 ## Update list
 
 - put to test to generate
 
-- use FastAPI
-- https://fastapi.tiangolo.com/
-
-- Docker-Compose : https://www.youtube.com/watch?v=gGkUu_T9848
-- Docker-Compose in project(development): https://www.youtube.com/watch?v=CzAyaSolZjY
-- Docker-Compose in project(product): https://www.youtube.com/watch?v=8kOubC4sYNk
-- Docker-Compose in project(push to hub): https://www.youtube.com/watch?v=bcYmfHOrOPM
+- use FastAPI :  https://fastapi.tiangolo.com/
 
 ---
+## Command 
+### run server
+```sh
+uvicorn api_server:app --reload --port 5000 --host 0.0.0.0
+# run in background
+sudo docker-compose up --build -d 
 
-- Text to speech
-- summery function : https://www.youtube.com/watch?v=TsfLm5iiYb4&t=3s
+# get the logs 
+sudo docker-compose logs 
 
-- free gpu
-- https://www.youtube.com/watch?v=wBCEDCiQh3Q
+# shutdown
+sudo docker-compose down 
+```
 
-- install ngrok
-
-python package
-
+### save python package
 ```
 pip freeze > requirements.txt
 
@@ -37,23 +35,34 @@ pip freeze > requirements.txt
 
 pip install -r requirements.txt
 ```
+---
 
-```
-- RabbitMQ
-https://youtu.be/hfUIWe1tK8E?si=mPC4pw0RzpSwO8yW
+### Note 
+#### Docker 
+- Docker-Compose : https://www.youtube.com/watch?v=gGkUu_T9848
+- Docker-Compose in project(development): https://www.youtube.com/watch?v=CzAyaSolZjY
+- Docker-Compose in project(product): https://www.youtube.com/watch?v=8kOubC4sYNk
+- Docker-Compose in project(push to hub): https://www.youtube.com/watch?v=bcYmfHOrOPM
 
-- Docker
-https://youtu.be/Ozb9mZg7MVM?si=I2QS82bs2QUd6sFN
+- Docker-Compose init easy : https://www.youtube.com/watch?v=iqrS7Q174Ac
 
-https://youtu.be/bi0cKgmRuiA?si=9089YSxd9amBdGAA
+---
 
-https://ithelp.ithome.com.tw/articles/10246065
+#### Text to speech
+- summery function : https://www.youtube.com/watch?v=TsfLm5iiYb4&t=3s
 
-- llama
-https://huggingface.co/blog/llama2
-```
+- free gpu: https://www.youtube.com/watch?v=wBCEDCiQh3Q
 
-### docker command with gpu
+
+#### RabbitMQ
+-  https://youtu.be/hfUIWe1tK8E?si=mPC4pw0RzpSwO8yW
+
+
+#### llama
+- https://huggingface.co/blog/llama2
+
+---
+### Docker command with gpu
 
 ```
 docker run --name api_server_image --gpus '"device=0"' nvidia/cuda
@@ -67,9 +76,11 @@ docker restart myrunoob
 docker-compose -f ./redis-docker-compose.yml up
 rq worker generate-image-queue
 ```
+---
+## python venv
 
-#### python venv
-
-- https://zhuanlan.zhihu.com/p/341481537
-- ./api_server_venv/Scripts/Activate.ps1
-- pip install accelerate
+- ref link : https://zhuanlan.zhihu.com/p/341481537
+- project link : `./api_server_venv/Scripts/Activate.ps1`
+```command 
+pip install accelerate
+```

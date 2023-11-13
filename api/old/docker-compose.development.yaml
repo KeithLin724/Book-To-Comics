@@ -1,0 +1,21 @@
+version: '3.3'
+
+services:
+  api_server:
+    runtime: nvidia  # 使用 NVIDIA Container Toolkit
+    build: .
+
+    command: python .api/src/api_server.py
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/api
+
+    environment:
+      - NVIDIA_VISIBLE_DEVIVES=all
+    # command: nvidia-smi
+    # restart: always
+    
+    
+
+

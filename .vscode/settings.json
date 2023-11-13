@@ -4,9 +4,11 @@
   },
   "python.formatting.provider": "none",
   "cSpell.words": [
+    "apscheduler",
     "audioldm",
     "cotainer",
     "cvssp",
+    "DGRAM",
     "fastapi",
     "Formeight",
     "gethostname",
@@ -22,5 +24,7 @@
     "werkzeug",
     "Yqcloud"
   ],
-  "peacock.color": "#1857a4"
+  "peacock.color": "#1857a4",
+  "docwriter.language": "English",
+  "docwriter.style": "NumPy"
 }

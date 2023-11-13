@@ -5,8 +5,8 @@
 # https://docs.docker.com/engine/reference/builder/
 
 ARG PYTHON_VERSION=3.11
-# FROM python:${PYTHON_VERSION}-slim as base
-FROM pytorch/pytorch:latest as base
+FROM python:${PYTHON_VERSION}-slim as base
+# FROM pytorch/pytorch:latest as base
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -35,16 +35,17 @@ WORKDIR /app
 # into this layer.
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
-    python -m pip install -r requirements.txt
+    python -m pip install redis rq
 
 # Switch to the non-privileged user to run the application.
 # USER appuser
 
 # Copy the source code into the container.
-COPY . .
+COPY ./api_task_func.py /app/
+COPY ./rq_worker.py /app/
 
 # Expose the port that the application listens on.
-EXPOSE 5000
+# EXPOSE 5000
 
 # Run the application.
-CMD uvicorn api_server:app --reload --port 5000 --host 0.0.0.0
+CMD python rq_worker.py
