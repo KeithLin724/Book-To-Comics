@@ -8,17 +8,51 @@
 # database or a cache. For examples, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
 services:
+  redis:
+    image: redis:6.0.7
+    container_name: redis
+    restart: always
+    volumes:
+      - redis_volume_data:/data
+    ports:
+      - 6379:6379
+
+  redis_insight:
+    image: redislabs/redisinsight:latest
+    container_name: redis_insight
+    restart: always
+    ports:
+      - 8001:8001
+    volumes:
+      - redis_insight_volume_data:/db
+
   server:
     runtime: nvidia  # 使用 NVIDIA Container Toolkit
     build:
       context: .
+      dockerfile: Dockerfile
     ports:
       - 5000:5000
+    depends_on:
+      - redis
     volumes:
       - .:/app
 
     environment:
       - NVIDIA_VISIBLE_DEVIVES=all
+    
+  work_listener:
+    build:
+      context: .
+      dockerfile: Dockerfile_worker
+      
+    depends_on:
+      - redis
+
+  
+volumes:
+  redis_volume_data:
+  redis_insight_volume_data:
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to

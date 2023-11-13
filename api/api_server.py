@@ -5,6 +5,7 @@ import json
 import httpx
 import io
 
+
 # import uvicorn
 import router
 from base import (
@@ -25,6 +26,7 @@ from base import (
     monitor_micro_server,
 )
 from api_task_func import generate_image_queue
+from worker_listener import WorkListener
 from contextlib import asynccontextmanager
 
 
@@ -45,9 +47,13 @@ async def lifespan(app: FastAPI):
 
     """
     # open server do
+    # worker_listener = WorkListener([TASK_IMAGE_QUEUE])
+    # worker_listener.start()
     await server_init()
+    # await start_listener_worker()
     yield
     # close server
+    # worker_listener.close()
     await server_close()
     return
 
