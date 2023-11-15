@@ -15,7 +15,7 @@ from base import (
     # redis queue
     TASK_IMAGE_QUEUE,
     # Item
-    GenerateImageItem,
+    ChatItem,
     GenerateServiceItem,
     ResultServiceItems,
     GenerateImageOldItem,
@@ -25,11 +25,13 @@ from base import (
     server_init,
     server_close,
     monitor_micro_server,
+    chat_to_ai_fast_function,
 )
 from api_task_func import generate_image_queue
 from worker_listener import WorkListener
 from contextlib import asynccontextmanager
-from func import helper
+
+# from func import helper
 
 
 @asynccontextmanager
@@ -104,10 +106,14 @@ async def generate_request_to_micro_service(generate_service: GenerateServiceIte
     }
 
     if generate_service.type_service == "chat":
-        async with httpx.AsyncClient() as client:
-            response = await client.post(f"{SERVER_URL}/chat", json=json_data)
+        provider, result = await chat_to_ai_fast_function(
+            prompt=generate_service.prompt
+        )
 
-        return JSONResponse(json.loads(response.content))
+        return {
+            "provider": provider,
+            "message": result,
+        }
 
     if generate_service.type_service in monitor_micro_server:
         response = await handle_request_function(generate_service, json_data)

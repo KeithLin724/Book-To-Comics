@@ -42,6 +42,11 @@ def handle_user_folder(user_name) -> str:
     return path
 
 
+async def chat_to_ai_fast_function(prompt: str):
+    provider, reply_message = await text_generator_model.generate(prompt=prompt)
+    return provider, reply_message
+
+
 from .message_item import (
     GenerateImageItem,
     ChatItem,
