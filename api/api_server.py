@@ -18,6 +18,7 @@ from base import (
     GenerateImageItem,
     GenerateServiceItem,
     ResultServiceItems,
+    GenerateImageOldItem,
     G4F_VERSION,
     LOGGER,
     # server lifespan
@@ -28,6 +29,7 @@ from base import (
 from api_task_func import generate_image_queue
 from worker_listener import WorkListener
 from contextlib import asynccontextmanager
+from func import helper
 
 
 @asynccontextmanager
@@ -140,13 +142,24 @@ async def handle_request_function(
         micro_service_method_url = monitor_micro_server.get_micro_service_method_url(
             micro_service_name=generate_service.type_service,
         )
+
+        unique_id = helper.to_unique_id(
+            user_name=generate_service.name,
+            user_prompt=generate_service.prompt,
+        )
+
+        json_data |= {"unique_id": unique_id}
+
         job = TASK_IMAGE_QUEUE.enqueue(
             generate_image_queue,
             micro_service_method_url,
             json_data,
             timeout=7200,
         )
-        return {"task_id": job.get_id()}
+        return {
+            "task_id": job.get_id(),
+            "unique_id": unique_id,
+        }
 
     return
 
@@ -200,7 +213,7 @@ async def handle_request_result_function(result_service: ResultServiceItems):
 
 
 @app.post("/generate")
-async def generate_image_request(generate_image_json: GenerateImageItem):
+async def generate_image_request(generate_image_json: GenerateImageOldItem):
     """
     The function `generate_image_request` enqueues a job to a Redis queue with the specified parameters
     and returns the task ID.
@@ -210,12 +223,18 @@ async def generate_image_request(generate_image_json: GenerateImageItem):
     :return: a dictionary with a single key-value pair. The key is "task_id" and the value is the ID of
     the job that was enqueued in the TASK_IMAGE_QUEUE.
     """
+    unique_id = helper.to_unique_id(
+        user_name=generate_image_json.name,
+        user_prompt=generate_image_json.prompt,
+    )
+
     job = TASK_IMAGE_QUEUE.enqueue(
         generate_image_queue,
         f"http://{SERVER_IP}:{SERVER_PORT}/generate-redis",
         {
             "name": generate_image_json.name,
             "prompt": generate_image_json.prompt,
+            "unique_id": unique_id,
         },
     )
     return {"task_id": job.get_id()}

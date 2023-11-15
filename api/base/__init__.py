@@ -49,6 +49,7 @@ from .message_item import (
     ConnectPlugItem,
     GenerateServiceItem,
     ResultServiceItems,
+    GenerateImageOldItem,
 )
 from .server_schedule import MonitorMicroServer
 

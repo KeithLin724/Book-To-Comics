@@ -1,4 +1,6 @@
 import socket
+import uuid
+import datetime
 
 from . import api_json
 
@@ -44,3 +46,31 @@ def save_server_data_to_json(server_ip: str, server_port: str):
     data = {"ip": server_ip, "port": server_port}
     api_json.json_to_file(data, "server_data.json")
     return
+
+
+def to_unique_id(user_name: str, user_prompt: str):
+    """The function `to_unique_id` generates a unique file name based on the user's name, prompt, and
+    current time.
+
+    Parameters
+    ----------
+    user_name : str
+        The user's name, which is a string.
+    user_prompt : str
+        The user_prompt parameter is a string that represents a prompt or question given to the user. It
+    could be something like "Please enter your email address" or "What is your favorite color?".
+
+    Returns
+    -------
+        a unique ID generated using the user's name, user prompt, and the current time.
+
+    """
+    now_time = datetime.datetime.now()
+
+    # make a unique file name
+    unique_file_name = uuid.uuid5(
+        namespace=uuid.NAMESPACE_DNS,
+        name=f"{user_name}_{user_prompt}_{now_time}",
+    )
+
+    return str(unique_file_name)

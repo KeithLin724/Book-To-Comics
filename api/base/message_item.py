@@ -1,9 +1,15 @@
 from pydantic import BaseModel
 
 
+class GenerateImageOldItem(BaseModel):
+    name: str = "tmp"
+    prompt: str
+
+
 class GenerateImageItem(BaseModel):
     name: str = "tmp"
     prompt: str
+    unique_id: str
 
 
 class ChatItem(BaseModel):

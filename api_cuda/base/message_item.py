@@ -4,6 +4,7 @@ from pydantic import BaseModel
 class GenerateImageItem(BaseModel):
     name: str = "tmp"
     prompt: str
+    unique_id: str
 
 
 class ResultItems(BaseModel):
