@@ -14,3 +14,4 @@ diffusers
 scipy
 apscheduler
 python-dotenv
+python-multipart
