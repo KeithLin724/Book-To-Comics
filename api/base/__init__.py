@@ -42,6 +42,25 @@ def handle_user_folder(user_name) -> str:
     return path
 
 
+async def chat_to_ai_fast_function(prompt: str):
+    """The function `chat_to_ai_fast_function` takes a prompt as input and uses a text generator model to
+    generate a reply message. It returns the provider and the generated reply message.
+
+    Parameters
+    ----------
+    prompt : str
+        The prompt is a string that represents the initial message or question that you want to send to the
+    AI model. It serves as a starting point for the AI to generate a response.
+
+    Returns
+    -------
+        two values: the provider and the reply message.
+
+    """
+    provider, reply_message = await text_generator_model.generate(prompt=prompt)
+    return provider, reply_message
+
+
 from .message_item import (
     GenerateImageItem,
     ChatItem,
@@ -49,6 +68,7 @@ from .message_item import (
     ConnectPlugItem,
     GenerateServiceItem,
     ResultServiceItems,
+    GenerateImageOldItem,
 )
 from .server_schedule import MonitorMicroServer
 

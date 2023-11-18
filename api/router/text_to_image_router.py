@@ -43,10 +43,11 @@ async def generate_image(generate_image_json: message_item.GenerateImageItem):
     now_time = datetime.datetime.now()
 
     # make a unique file name
-    unique_file_name = uuid.uuid5(
-        namespace=uuid.NAMESPACE_DNS,
-        name=f"{user_name}_{user_prompt}_{now_time}",
-    )
+    # unique_file_name = uuid.uuid5(
+    #     namespace=uuid.NAMESPACE_DNS,
+    #     name=f"{user_name}_{user_prompt}_{now_time}",
+    # )
+    unique_file_name = generate_image_json.unique_id
 
     file_path, file_name = (
         IMAGE_FOLDER_PATH,

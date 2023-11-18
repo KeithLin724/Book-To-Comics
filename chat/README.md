@@ -1,5 +1,5 @@
-# Book-to-Comics 
-## Written by Vincent
+# Book-to-Comics-API-Example 
+## Written by KYLiN , Vincent
 
 ----
 ## Reference

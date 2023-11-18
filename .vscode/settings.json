@@ -19,6 +19,7 @@
     "stabilityai",
     "templating",
     "toolbelt",
+    "uploadfile",
     "uvicorn",
     "wavfile",
     "werkzeug",

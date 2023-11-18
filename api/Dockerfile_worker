@@ -15,6 +15,9 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # the application crashes without emitting any logs due to buffering.
 ENV PYTHONUNBUFFERED=1
 
+ENV SERVER_IP=${SERVER_IP}\
+    SERVER_PORT=${SERVER_PORT}
+
 WORKDIR /app
 
 # Create a non-privileged user that the app will run under.
@@ -35,7 +38,7 @@ WORKDIR /app
 # into this layer.
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
-    python -m pip install redis rq
+    python -m pip install redis rq python-dotenv
 
 # Switch to the non-privileged user to run the application.
 # USER appuser

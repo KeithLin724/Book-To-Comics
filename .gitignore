@@ -11,3 +11,4 @@ gui_venv_linux
 *.log
 **.vscode/
 .vscode/settings.json
+**.env
