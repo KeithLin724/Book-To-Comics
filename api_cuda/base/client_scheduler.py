@@ -45,8 +45,8 @@ class MonitorServer:
                     )
                 # if success connect
                 if res.status_code == 200:
-                    self._scheduler.remove_job(JOB_ID)
                     self.check_server_is_alive()
+                    self._scheduler.remove_job(JOB_ID)
 
             except Exception as e:
                 print(f"error: {str(e)} , server:({self._server_url}) service is close")
@@ -74,8 +74,8 @@ class MonitorServer:
                 return
 
             # else
-            self._scheduler.remove_job(JOB_ID)
             self.start_connect_server()
+            self._scheduler.remove_job(JOB_ID)
             return
 
         self._scheduler.add_job(
