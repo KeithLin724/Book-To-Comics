@@ -70,7 +70,8 @@ class TextGenerator:
         try:
             # Wait for the first task to complete
             completed_task, pending_tasks = await asyncio.wait(
-                task_list, return_when=asyncio.FIRST_COMPLETED
+                task_list,
+                return_when=asyncio.FIRST_COMPLETED,
             )
 
             # Check the result of the first completed task
@@ -114,8 +115,10 @@ class TextGenerator:
 
             # is ok
             if state == "OK" and msg != "":
+                # if some task is not done, cancel it
                 for task in pending_tasks:
-                    task.cancel()
+                    if not task.done():
+                        task.cancel()
 
                 # [task.cancel() for task in pending_tasks]
 
