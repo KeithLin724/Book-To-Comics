@@ -15,3 +15,7 @@ scipy
 apscheduler
 python-dotenv
 python-multipart
+
+optimum
+onnxruntime
+onnx

@@ -11,3 +11,4 @@ gui_venv_linux
 *.log
 .vscode/
 **.env
+onnx-stable-diffusion-v1-5/
