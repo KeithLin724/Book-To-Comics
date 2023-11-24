@@ -1,10 +1,9 @@
 from fastapi import APIRouter
 from fastapi.responses import FileResponse, StreamingResponse
-import uuid
 import datetime
 import os
 import io
-from pydantic import BaseModel
+
 
 from base import (
     SERVER_IP,
