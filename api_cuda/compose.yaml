@@ -13,6 +13,12 @@ services:
       context: .
     ports:
       - 4080:4080
+    
+    environment:
+      - NVIDIA_VISIBLE_DEVIVES=all
+
+      - LAB_SERVER_IP=${LAB_SERVER_IP}
+      - LAB_SERVER_PORT=${LAB_SERVER_PORT}
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
