@@ -110,7 +110,7 @@ async def replay_image(requestItem: ResultItems):
         return response
 
     # make the file path and check it
-    file_path = os.path.join(image_in_server, f"{unique_id}.png")
+    file_path = os.path.join(IMAGE_FOLDER_PATH, f"{unique_id}.png")
     if not os.path.exists(file_path):
         return {"error": "can not find the file about this id"}
 
