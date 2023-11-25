@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse, Response
 import json
 import httpx
 import io
@@ -14,6 +14,7 @@ from base import (
     SERVER_URL,
     # redis queue
     TASK_IMAGE_QUEUE,
+    REDIS_CONNECT,
     # Item
     ChatItem,
     GenerateServiceItem,
@@ -31,7 +32,7 @@ from api_task_func import generate_image_queue
 from worker_listener import WorkListener
 from contextlib import asynccontextmanager
 
-from func import helper, handler
+from func import helper
 
 
 @asynccontextmanager
@@ -175,7 +176,7 @@ async def request_to_micro_service_get_result(result_service_item: ResultService
     # type_of_service = result_service_item.type_service
 
     if result_service_item.type_service in monitor_micro_server:
-        response = await handler.handle_request_result_function(
+        response = await handle_request_result_function(
             result_service=result_service_item
         )
         return response
@@ -183,39 +184,90 @@ async def request_to_micro_service_get_result(result_service_item: ResultService
     return {"error": f"service ({result_service_item.type_service}) is close"}
 
 
-# async def handle_request_result_function(result_service: ResultServiceItems):
-#     type_of_service = result_service.type_service
+async def handle_request_result_function(result_service: ResultServiceItems):
+    """The function `handle_request_result_function` handles the result of a service request.
 
-#     if type_of_service == "text_to_image":
-#         json_data = {
-#             "unique_id": result_service.unique_id,
-#             "file_path": result_service.file_path,
-#         }
+    Parameters
+    ----------
+    result_service : ResultServiceItems
+        The parameter `result_service` is an instance of the `ResultServiceItems` class. It is used to pass
+    information about the result of a service request. The `ResultServiceItems` class likely has
+    attributes such as `type_service` which stores the type of service requested (e.g., "
 
-#         micro_service_url = monitor_micro_server.get_micro_service_url(
-#             micro_service_name=type_of_service,
-#         )
+    Returns
+    -------
+        a response.
 
-#         # get the result from the micro service
-#         async with httpx.AsyncClient() as client:
-#             response = await client.post(f"{micro_service_url}/result", json=json_data)
+    """
+    type_of_service = result_service.type_service
 
-#         content_type = response.headers.get("Content-Type")
+    if type_of_service == "text_to_image":
+        response = await handle_text_to_image_result(result_service=result_service)
+        return response
 
-#         # handle the content type
-#         if content_type == "image/jpeg":
-#             image_bytes = io.BytesIO(response.content)
-#             return_response = StreamingResponse(image_bytes, media_type="image/jpeg")
-#             response.headers["Content-Disposition"] = response.headers.get(
-#                 "Content-Disposition", ""
-#             )
+    return
 
-#             return return_response
 
-#         # error message
-#         return JSONResponse(content=json.loads(response.content))
+async def handle_text_to_image_result(
+    result_service: ResultServiceItems,
+) -> Response:
+    unique_id, task_id = result_service.unique_id, result_service.task_id
 
-#     return
+    # TODO: check is in queue or finish
+
+    if task_id is not None:
+        job = TASK_IMAGE_QUEUE.fetch_job(task_id)
+
+        if not job.is_finished:
+            return JSONResponse(
+                content={
+                    "job_state": job.get_status(),
+                    "message": f"task id:{task_id}, state is {job.get_status()}",
+                }
+            )
+
+    # * is finish
+
+    # TODO: get from redis
+    # find the redis server is have it
+    if unique_id and (image_in_server := REDIS_CONNECT.get(unique_id)) is not None:
+        image_in_server = io.BytesIO(image_in_server)
+        response = StreamingResponse(image_in_server, media_type="image/jpeg")
+
+        response.headers[
+            "Content-Disposition"
+        ] = f'attachment; filename="{unique_id}.jpg"'
+
+        return response
+
+    # TODO: get result from micro service
+    json_data = {
+        "unique_id": result_service.unique_id,
+        "file_path": result_service.file_path,
+    }
+
+    micro_service_url = monitor_micro_server.get_micro_service_url(
+        micro_service_name=result_service.type_service,
+    )
+
+    # get the result from the micro service
+    async with httpx.AsyncClient() as client:
+        response = await client.post(f"{micro_service_url}/result", json=json_data)
+
+    content_type = response.headers.get("Content-Type")
+
+    # handle the content type
+    if content_type == "image/jpeg":
+        image_bytes = io.BytesIO(response.content)
+        return_response = StreamingResponse(image_bytes, media_type="image/jpeg")
+        response.headers["Content-Disposition"] = response.headers.get(
+            "Content-Disposition", ""
+        )
+
+        return return_response
+
+    # error message
+    return JSONResponse(content=json.loads(response.content))
 
 
 @app.post("/generate")
