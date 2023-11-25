@@ -81,7 +81,7 @@ class MonitorServer:
         self._scheduler.add_job(
             _check_server_alive,
             "interval",
-            second=10,
+            seconds=10,
             id=JOB_ID,
         )
 
