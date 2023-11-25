@@ -160,7 +160,7 @@ async def handle_request_function(
             generate_image_queue,
             micro_service_method_url,
             json_data,
-            timeout=7200,
+            # timeout=7200,
         )
         return {
             "task_id": job.get_id(),

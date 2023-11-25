@@ -2,6 +2,8 @@ from rq import Worker, Queue, Connection
 from redis import Redis
 import os
 from dotenv import load_dotenv
+import api_task_func
+
 
 load_dotenv()
 
