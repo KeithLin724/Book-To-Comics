@@ -31,7 +31,7 @@ from api_task_func import generate_image_queue
 from worker_listener import WorkListener
 from contextlib import asynccontextmanager
 
-from func import helper
+from func import helper, handler
 
 
 @asynccontextmanager
@@ -175,7 +175,7 @@ async def request_to_micro_service_get_result(result_service_item: ResultService
     # type_of_service = result_service_item.type_service
 
     if result_service_item.type_service in monitor_micro_server:
-        response = await handle_request_result_function(
+        response = await handler.handle_request_result_function(
             result_service=result_service_item
         )
         return response
@@ -183,39 +183,39 @@ async def request_to_micro_service_get_result(result_service_item: ResultService
     return {"error": f"service ({result_service_item.type_service}) is close"}
 
 
-async def handle_request_result_function(result_service: ResultServiceItems):
-    type_of_service = result_service.type_service
+# async def handle_request_result_function(result_service: ResultServiceItems):
+#     type_of_service = result_service.type_service
 
-    if type_of_service == "text_to_image":
-        json_data = {
-            "unique_id": result_service.unique_id,
-            "file_path": result_service.file_path,
-        }
+#     if type_of_service == "text_to_image":
+#         json_data = {
+#             "unique_id": result_service.unique_id,
+#             "file_path": result_service.file_path,
+#         }
 
-        micro_service_url = monitor_micro_server.get_micro_service_url(
-            micro_service_name=type_of_service,
-        )
+#         micro_service_url = monitor_micro_server.get_micro_service_url(
+#             micro_service_name=type_of_service,
+#         )
 
-        # get the result from the micro service
-        async with httpx.AsyncClient() as client:
-            response = await client.post(f"{micro_service_url}/result", json=json_data)
+#         # get the result from the micro service
+#         async with httpx.AsyncClient() as client:
+#             response = await client.post(f"{micro_service_url}/result", json=json_data)
 
-        content_type = response.headers.get("Content-Type")
+#         content_type = response.headers.get("Content-Type")
 
-        # handle the content type
-        if content_type == "image/jpeg":
-            image_bytes = io.BytesIO(response.content)
-            return_response = StreamingResponse(image_bytes, media_type="image/jpeg")
-            response.headers["Content-Disposition"] = response.headers.get(
-                "Content-Disposition", ""
-            )
+#         # handle the content type
+#         if content_type == "image/jpeg":
+#             image_bytes = io.BytesIO(response.content)
+#             return_response = StreamingResponse(image_bytes, media_type="image/jpeg")
+#             response.headers["Content-Disposition"] = response.headers.get(
+#                 "Content-Disposition", ""
+#             )
 
-            return return_response
+#             return return_response
 
-        # error message
-        return JSONResponse(content=json.loads(response.content))
+#         # error message
+#         return JSONResponse(content=json.loads(response.content))
 
-    return
+#     return
 
 
 @app.post("/generate")
