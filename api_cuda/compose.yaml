@@ -9,8 +9,10 @@
 # https://github.com/docker/awesome-compose
 services:
   server:
+    runtime: nvidia  # 使用 NVIDIA Container Toolkit
     build:
       context: .
+      dockerfile: Dockerfile
     ports:
       - 4080:4080
     
