@@ -38,7 +38,9 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     python -m pip install -r requirements.txt
 
 # Switch to the non-privileged user to run the application.
-USER appuser
+# USER appuser
+RUN python -c "from diffusers import StableDiffusionPipeline, EulerDiscreteScheduler;import torch; scheduler=EulerDiscreteScheduler.from_pretrained('stabilityai/stable-diffusion-2', subfolder='scheduler');pipe = StableDiffusionPipeline.from_pretrained('stabilityai/stable-diffusion-2',scheduler=scheduler,torch_dtype=torch.float16);import transformers;transformers.utils.move_cache()"
+# RUN python -c "from transformers import utils as transformers_utils; transformers_utils.move_cache()"
 
 # Copy the source code into the container.
 COPY . .

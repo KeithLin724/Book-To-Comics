@@ -8,7 +8,7 @@
 # database or a cache. For examples, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
 services:
-  server:
+  server_text_to_image:
     runtime: nvidia  # 使用 NVIDIA Container Toolkit
     build:
       context: .
