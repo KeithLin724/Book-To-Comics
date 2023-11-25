@@ -1,5 +1,5 @@
 import socket
-from model import TextToImage, TextGenerator
+from model import TextGenerator
 import os
 from rq import Queue
 from redis import Redis
@@ -24,7 +24,7 @@ SERVER_PORT = 5000
 SERVER_URL = f"http://{SERVER_IP}:{SERVER_PORT}"
 
 
-text_to_image_model = TextToImage()
+# text_to_image_model = TextToImage()
 
 
 text_generator_model = TextGenerator()

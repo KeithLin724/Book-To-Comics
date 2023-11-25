@@ -3,6 +3,7 @@ import torch
 from PIL.Image import Image
 import pickle
 import asyncio
+import transformers
 
 
 class TextToImage:
@@ -28,6 +29,7 @@ class TextToImage:
         )
 
         self.pipe = self.pipe.to(self.device)
+        transformers.utils.move_cache()
 
     async def load_with_async(self):
         await asyncio.to_thread(self.load)

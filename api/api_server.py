@@ -268,32 +268,32 @@ async def handle_text_to_image_result(
     return JSONResponse(content=json.loads(response.content))
 
 
-@app.post("/generate")
-async def generate_image_request(generate_image_json: GenerateImageOldItem):
-    """
-    The function `generate_image_request` enqueues a job to a Redis queue with the specified parameters
-    and returns the task ID.
+# @app.post("/generate")
+# async def generate_image_request(generate_image_json: GenerateImageOldItem):
+#     """
+#     The function `generate_image_request` enqueues a job to a Redis queue with the specified parameters
+#     and returns the task ID.
 
-    :param generate_image_json: The parameter `generate_image_json` is of type `GenerateImageItem`
-    :type generate_image_json: GenerateImageItem
-    :return: a dictionary with a single key-value pair. The key is "task_id" and the value is the ID of
-    the job that was enqueued in the TASK_IMAGE_QUEUE.
-    """
-    unique_id = helper.to_unique_id(
-        user_name=generate_image_json.name,
-        user_prompt=generate_image_json.prompt,
-    )
+#     :param generate_image_json: The parameter `generate_image_json` is of type `GenerateImageItem`
+#     :type generate_image_json: GenerateImageItem
+#     :return: a dictionary with a single key-value pair. The key is "task_id" and the value is the ID of
+#     the job that was enqueued in the TASK_IMAGE_QUEUE.
+#     """
+#     unique_id = helper.to_unique_id(
+#         user_name=generate_image_json.name,
+#         user_prompt=generate_image_json.prompt,
+#     )
 
-    job = TASK_IMAGE_QUEUE.enqueue(
-        generate_image_queue,
-        f"http://{SERVER_IP}:{SERVER_PORT}/generate-redis",
-        {
-            "name": generate_image_json.name,
-            "prompt": generate_image_json.prompt,
-            "unique_id": unique_id,
-        },
-    )
-    return {"task_id": job.get_id()}
+#     job = TASK_IMAGE_QUEUE.enqueue(
+#         generate_image_queue,
+#         f"http://{SERVER_IP}:{SERVER_PORT}/generate-redis",
+#         {
+#             "name": generate_image_json.name,
+#             "prompt": generate_image_json.prompt,
+#             "unique_id": unique_id,
+#         },
+#     )
+#     return {"task_id": job.get_id()}
 
 
 # https://blog.csdn.net/qq_33801641/article/details/120320780
