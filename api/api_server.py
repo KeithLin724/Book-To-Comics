@@ -52,13 +52,11 @@ async def lifespan(app: FastAPI):
 
     """
     # open server do
-    # worker_listener = WorkListener([TASK_IMAGE_QUEUE])
-    # worker_listener.start()
     await server_init()
-    # await start_listener_worker()
+
     yield
+
     # close server
-    # worker_listener.close()
     await server_close()
     return
 
