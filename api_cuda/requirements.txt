@@ -21,4 +21,4 @@ onnxruntime
 onnxruntime-gpu
 onnx
 
-xformers==0.0.22.post7
+# xformers==0.0.22.post7
