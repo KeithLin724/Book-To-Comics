@@ -29,7 +29,6 @@ from base import (
     chat_to_ai_fast_function,
 )
 from api_task_func import generate_image_queue
-from worker_listener import WorkListener
 from contextlib import asynccontextmanager
 
 from func import helper
