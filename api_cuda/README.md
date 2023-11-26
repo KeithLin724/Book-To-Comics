@@ -14,7 +14,7 @@ HOST_IP={YOUR_HOST_IP}
 ```
 
 ## API-information
-> You can check in `http://{YOUR_HOST_IP}:5000/docs`
+> You can check in `http://{YOUR_HOST_IP}:4080/docs`
 
 ## Command 
 ### run server

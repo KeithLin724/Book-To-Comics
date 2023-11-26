@@ -27,14 +27,25 @@ docker logs -f api_server_1
 cd api
 docker-compose down 
 ```
+In `api` folder is a main server for handler other service, such as `chat`, `text_to_image`
+
+In `api_cuda` folder is a text_to_image server, for provide text to image service
+
+
 ### Mention
-You need to make a`./api/.env` 
+You need to make a`./api/.env` and `./api_cuda/.env`
 #### Format of `./api/.env`
 ```sh
 SERVER_IP={your_server_ip}
 SERVER_PORT=5000
 ```
 
+#### Format of `./api_cuda/.env`
+```sh
+LAB_SERVER_IP={YOUR_CONNECT_SERVER_IP}
+LAB_SERVER_PORT=5000
+HOST_IP={YOUR_HOST_IP}
+```
 ---
 
 ## Example app 
