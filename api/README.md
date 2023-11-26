@@ -13,15 +13,25 @@ This server is fastAPI to build it
 - use FastAPI :  https://fastapi.tiangolo.com/
 
 ---
+## Setup
+Make sure you add a `.env` file under `api` folder, path like `./api/.env`
+
+File format
+```sh
+SERVER_IP={YOUR_HOST_IP}
+SERVER_PORT=5000
+```
+## API-information
+> You can check in `http://{YOUR_HOST_IP}:5000/
+
 ## Command 
 ### run server
 ```sh
-uvicorn api_server:app --reload --port 5000 --host 0.0.0.0
-# run in background
+# run server (in background)
 sudo docker-compose up --build -d 
 
 # get the logs 
-sudo docker-compose logs 
+sudo docker-compose logs -f
 
 # shutdown
 sudo docker-compose down 
