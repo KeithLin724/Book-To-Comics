@@ -20,7 +20,7 @@ LAB_SERVER_IP, LAB_SERVER_PORT = (
 
 REDIS_CONNECT = Redis(host=LAB_SERVER_IP, port=6379)
 
-SERVER_IP, SERVER_PORT = helper.get_local_ip(), 4080
+SERVER_IP, SERVER_PORT = os.getenv("HOST_IP"), 4080
 
 SERVER_URL = f"http://{SERVER_IP}:{SERVER_PORT}"
 
@@ -30,11 +30,11 @@ LOGGER = logging.getLogger("uvicorn")
 
 text_to_image_model = TextToImage()
 
-RELOCATE_SERVER_URL = f"http://{LAB_SERVER_IP}:{SERVER_PORT}"
+# RELOCATE_SERVER_URL = f"http://{LAB_SERVER_IP}:{SERVER_PORT}"
 
 SERVER_TYPE = {
     "type_name": "text_to_image",
-    "url": RELOCATE_SERVER_URL,
+    "url": SERVER_URL,
     "check_alive_root": "is_live",
     "method_root": "generate_redis",
 }

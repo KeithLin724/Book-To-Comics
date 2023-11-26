@@ -21,6 +21,7 @@ services:
 
       - LAB_SERVER_IP=${LAB_SERVER_IP}
       - LAB_SERVER_PORT=${LAB_SERVER_PORT}
+      - HOST_IP=${HOST_IP}
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
