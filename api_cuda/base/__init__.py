@@ -1,19 +1,26 @@
 import os
 import socket
-from . import api_func, api_json
+from . import api_func, api_json, helper
 
 # import api_json
 from model import TextToImage
 import logging
 from redis import Redis
 
-from .client_scheduler import MonitorServer
+from base.client_scheduler import MonitorServer
 
-LAB_SERVER_IP, LAB_SERVER_PORT = "140.113.238.35", 5000
+from dotenv import load_dotenv
+
+load_dotenv()
+
+LAB_SERVER_IP, LAB_SERVER_PORT = (
+    os.getenv("LAB_SERVER_IP"),
+    os.getenv("LAB_SERVER_PORT"),
+)
 
 REDIS_CONNECT = Redis(host=LAB_SERVER_IP, port=6379)
 
-SERVER_IP, SERVER_PORT = socket.gethostbyname(socket.gethostname()), 4080
+SERVER_IP, SERVER_PORT = os.getenv("HOST_IP"), 4080
 
 SERVER_URL = f"http://{SERVER_IP}:{SERVER_PORT}"
 
@@ -22,6 +29,8 @@ IMAGE_FOLDER_PATH = os.path.join(FOLDER_PATH, "images")
 LOGGER = logging.getLogger("uvicorn")
 
 text_to_image_model = TextToImage()
+
+# RELOCATE_SERVER_URL = f"http://{LAB_SERVER_IP}:{SERVER_PORT}"
 
 SERVER_TYPE = {
     "type_name": "text_to_image",
@@ -62,7 +71,7 @@ def handle_user_folder(user_name) -> str:
 
 
 async def server_init():
-    save_server_data_to_json()
+    # save_server_data_to_json()
     # text_to_image_model.load()
     await text_to_image_model.load_with_async()
     monitor_server.start()

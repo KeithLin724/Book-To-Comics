@@ -42,5 +42,5 @@ async def filter_routes(request, call_next):
         return response
 
 
-if __name__ == "__main__":
-    uvicorn.run(app, host=SERVER_IP, port=SERVER_PORT)
+# if __name__ == "__main__":
+#     uvicorn.run(app, host=SERVER_IP, port=SERVER_PORT)

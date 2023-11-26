@@ -1,0 +1,24 @@
+fastapi
+uvicorn
+redis
+rq
+torch 
+torchvision 
+torchaudio
+accelerate
+transformers
+httpx
+Pillow
+g4f
+diffusers
+scipy
+apscheduler
+python-dotenv
+python-multipart
+
+optimum
+onnxruntime
+onnxruntime-gpu
+onnx
+
+# xformers==0.0.22.post7

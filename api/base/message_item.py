@@ -42,6 +42,7 @@ class GenerateServiceItem(BaseModel):
 class ResultServiceItems(BaseModel):
     type_service: str
     unique_id: str
+    task_id: str = None
     file_path: str = None
     file_name: str = None
     time: str = None

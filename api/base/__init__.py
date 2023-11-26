@@ -1,5 +1,5 @@
 import socket
-from model import TextToImage, TextGenerator
+from model import TextGenerator
 import os
 from rq import Queue
 from redis import Redis
@@ -7,15 +7,24 @@ from func import api_json
 import logging
 from func import helper
 
-REDIS_CONNECT = Redis(host="localhost", port=6379)
-TASK_IMAGE_QUEUE = Queue("generate-image-queue", connection=REDIS_CONNECT)
+from dotenv import load_dotenv
 
+load_dotenv()
 
-SERVER_IP = helper.get_local_ip()
+REDIS_CONNECT = Redis(host=os.getenv("SERVER_IP"), port=6379)
+TASK_IMAGE_QUEUE = Queue(
+    "generate-image-queue",
+    connection=REDIS_CONNECT,
+    default_timeout=3600,
+)
+
+# SERVER_IP = helper.get_local_ip()
+SERVER_IP = os.getenv("SERVER_IP")
 SERVER_PORT = 5000
 SERVER_URL = f"http://{SERVER_IP}:{SERVER_PORT}"
 
-text_to_image_model = TextToImage()
+
+# text_to_image_model = TextToImage()
 
 
 text_generator_model = TextGenerator()
@@ -75,9 +84,19 @@ from .server_schedule import MonitorMicroServer
 monitor_micro_server = MonitorMicroServer()
 
 
+def is_connect_to_redis():
+    try:
+        # Check if Redis is reachable
+        REDIS_CONNECT.ping()
+        LOGGER.info("Connected to Redis!")
+    except Exception as e:
+        LOGGER.error(f"Error connecting to Redis: {str(e)}")
+
+
 async def server_init():
     helper.save_server_data_to_json(server_ip=SERVER_IP, server_port=SERVER_PORT)
     # text_to_image_model.load()
+    is_connect_to_redis()
     monitor_micro_server.start()
     LOGGER.info(f"server is open , URL :{SERVER_URL}")
     return

@@ -5,8 +5,8 @@
 # https://docs.docker.com/engine/reference/builder/
 
 ARG PYTHON_VERSION=3.11
-FROM python:${PYTHON_VERSION}-slim as base
-# FROM pytorch/pytorch:latest as base
+# FROM python:${PYTHON_VERSION}-slim as base
+FROM pytorch/pytorch:latest as base
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -15,13 +15,10 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # the application crashes without emitting any logs due to buffering.
 ENV PYTHONUNBUFFERED=1
 
-ENV SERVER_IP=${SERVER_IP}\
-    SERVER_PORT=${SERVER_PORT}
-
 WORKDIR /app
 
 # Create a non-privileged user that the app will run under.
-# See https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
+# See https://docs.docker.com/go/dockerfile-user-best-practices/
 # ARG UID=10001
 # RUN adduser \
 #     --disabled-password \
@@ -38,17 +35,18 @@ WORKDIR /app
 # into this layer.
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
-    python -m pip install redis rq python-dotenv requests
+    python -m pip install -r requirements.txt
 
 # Switch to the non-privileged user to run the application.
 # USER appuser
+RUN python -c "from diffusers import StableDiffusionPipeline, EulerDiscreteScheduler;import torch; scheduler=EulerDiscreteScheduler.from_pretrained('stabilityai/stable-diffusion-2', subfolder='scheduler');pipe = StableDiffusionPipeline.from_pretrained('stabilityai/stable-diffusion-2',scheduler=scheduler,torch_dtype=torch.float16);import transformers;transformers.utils.move_cache()"
+# RUN python -c "from transformers import utils as transformers_utils; transformers_utils.move_cache()"
 
 # Copy the source code into the container.
-COPY ./api_task_func.py .
-COPY ./rq_worker.py .
+COPY . .
 
 # Expose the port that the application listens on.
-# EXPOSE 5000
+EXPOSE 4080
 
 # Run the application.
-CMD python rq_worker.py
+CMD uvicorn api_server_text_to_image:app --host=0.0.0.0 --port=4080

@@ -1,5 +1,6 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import httpx
+import base
 
 
 class MonitorServer:
@@ -45,11 +46,14 @@ class MonitorServer:
                     )
                 # if success connect
                 if res.status_code == 200:
-                    self._scheduler.remove_job(JOB_ID)
                     self.check_server_is_alive()
+                    self._scheduler.remove_job(JOB_ID)
+                    base.LOGGER.info(f"connect to server: {self._server_url}")
 
             except Exception as e:
-                print(f"error: {str(e)} , server:({self._server_url}) service is close")
+                base.LOGGER.error(
+                    f"error: {str(e)} , server:({self._server_url}) service is close"
+                )
 
         self._scheduler.add_job(
             _connect_server,
@@ -74,14 +78,14 @@ class MonitorServer:
                 return
 
             # else
-            self._scheduler.remove_job(JOB_ID)
             self.start_connect_server()
+            self._scheduler.remove_job(JOB_ID)
             return
 
         self._scheduler.add_job(
             _check_server_alive,
             "interval",
-            second=10,
+            seconds=10,
             id=JOB_ID,
         )
 

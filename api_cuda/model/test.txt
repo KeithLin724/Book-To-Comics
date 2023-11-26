@@ -1,0 +1,1 @@
+from diffusers import StableDiffusionPipeline, EulerDiscreteScheduler;import torch; scheduler=EulerDiscreteScheduler.from_pretrained('stabilityai/stable-diffusion-2', subfolder='scheduler');pipe = StableDiffusionPipeline.from_pretrained('stabilityai/stable-diffusion-2',scheduler=scheduler,torch_dtype=torch.float16);import transformers;transformers.utils.move_cache()
