@@ -30,9 +30,11 @@ LOGGER = logging.getLogger("uvicorn")
 
 text_to_image_model = TextToImage()
 
+RELOCATE_SERVER_URL = f"http://{LAB_SERVER_IP}:{SERVER_PORT}"
+
 SERVER_TYPE = {
     "type_name": "text_to_image",
-    "url": SERVER_URL,
+    "url": RELOCATE_SERVER_URL,
     "check_alive_root": "is_live",
     "method_root": "generate_redis",
 }

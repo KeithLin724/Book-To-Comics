@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse, StreamingResponse, Response
 import json
 import httpx
 import io
+import time
 
 
 # import uvicorn
@@ -265,6 +266,15 @@ async def handle_text_to_image_result(
 
     # error message
     return JSONResponse(content=json.loads(response.content))
+
+
+# @app.middleware("http")
+# async def add_process_time_header(request: Request, call_next):
+#     start_time = time.time()
+#     response = await call_next(request)
+#     process_time = time.time() - start_time
+#     response.headers["X-Process-Time"] = str(process_time)
+#     return response
 
 
 # @app.post("/generate")

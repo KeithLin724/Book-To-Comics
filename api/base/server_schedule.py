@@ -3,6 +3,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 # from apscheduler.events import EVENT_JOB_ERROR
 
 from . import LOGGER
+import time
 
 # https://apscheduler.readthedocs.io/en/3.x/userguide.html
 import httpx
@@ -33,8 +34,12 @@ class MonitorMicroServer:
 
         async def get_alive() -> None:
             try:
+                start_time = time.time()
                 async with httpx.AsyncClient() as client:
                     res = await client.get(f"{url}/{is_alive_root}")
+                end_time = time.time() - start_time
+
+                LOGGER.info(f"micro service({task_id}) response time :{end_time}")
 
             except Exception as e:
                 LOGGER.warning(
