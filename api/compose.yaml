@@ -51,7 +51,7 @@ services:
   work_listener:
     build:
       context: .
-      dockerfile: Dockerfile_worker
+      dockerfile: Worker.Dockerfile
       
     depends_on:
       - redis
