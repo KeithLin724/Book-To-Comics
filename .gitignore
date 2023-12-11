@@ -12,3 +12,4 @@ gui_venv_linux
 .vscode/
 **.env
 onnx-stable-diffusion-v1-5/
+test/
