@@ -70,6 +70,25 @@ async def chat_to_ai_fast_function(prompt: str):
     return provider, reply_message
 
 
+async def cut_prompt_with_fast_function(prompt: str):
+    """The function `cut_prompt_with_fast_function` takes a prompt as input and uses a text generator model
+    to cut the prompt.
+
+    Parameters
+    ----------
+    prompt : str
+        The `prompt` parameter is a string that represents the text you want to use as a prompt for the
+    text generation model. It is the input that the model will use to generate the desired output.
+
+    Returns
+    -------
+        The function `cut_prompt_with_fast_function` returns the result of calling the `cut_prompt` method
+    of the `text_generator_model` object with the provided `prompt` as an argument.
+
+    """
+    return await text_generator_model.cut_prompt(prompt=prompt)
+
+
 from .message_item import (
     GenerateImageItem,
     ChatItem,

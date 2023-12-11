@@ -10,8 +10,6 @@ import time
 # import uvicorn
 import router
 from base import (
-    SERVER_IP,
-    SERVER_PORT,
     SERVER_URL,
     # redis queue
     TASK_IMAGE_QUEUE,
@@ -28,6 +26,7 @@ from base import (
     server_close,
     monitor_micro_server,
     chat_to_ai_fast_function,
+    cut_prompt_with_fast_function,
 )
 from api_task_func import generate_image_queue
 from contextlib import asynccontextmanager
@@ -104,6 +103,7 @@ async def generate_request_to_micro_service(generate_service: GenerateServiceIte
         "prompt": generate_service.prompt,
     }
 
+    # TODO: chat with ai service
     if generate_service.type_service == "chat":
         provider, result = await chat_to_ai_fast_function(
             prompt=generate_service.prompt
@@ -114,6 +114,11 @@ async def generate_request_to_micro_service(generate_service: GenerateServiceIte
             "message": result,
         }
 
+    # TODO: cut prompt service
+    elif generate_service.type_service == "cut_prompt":
+        return await cut_prompt_with_fast_function(prompt=generate_service.prompt)
+
+    # TODO: other service
     if generate_service.type_service in monitor_micro_server:
         response = await handle_request_function(generate_service, json_data)
         return response
