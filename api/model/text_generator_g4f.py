@@ -22,7 +22,14 @@ class TextGenerator:
             g4f.Provider.ChatBase,
             g4f.Provider.GptGo,
             g4f.Provider.You,
+            g4f.Provider.Raycast,
             # g4f.Provider.Yqcloud,
+        ]
+
+        self._cut_prompt_provider = [
+            g4f.Provider.You,
+            # g4f.Provider.GptGo,
+            g4f.Provider.GeekGpt,
         ]
 
     async def run_provider(self, provider: g4f.Provider.BaseProvider, prompt: str):
@@ -142,3 +149,41 @@ class TextGenerator:
 
         provider, msg = await self.get_generate(prompt=prompt)
         return provider, msg
+
+    async def cut_prompt(self, prompt: str) -> dict:
+        """The `cut_prompt` function takes a prompt string and runs it through multiple providers
+        asynchronously, returning a list of dictionaries containing the state, provider, and response for
+        each provider.
+
+        Parameters
+        ----------
+        prompt : str
+            The `prompt` parameter is a string that represents the text or question that you want to send to
+        each provider for processing.
+
+        Returns
+        -------
+            The `cut_prompt` function returns a list of dictionaries. Each dictionary contains three key-value
+        pairs: "state", "provider", and "response". The "state" key represents the state of the provider,
+        the "provider" key represents the provider itself, and the "response" key represents the response
+        received from the provider.
+
+        """
+        pending_tasks = [
+            self.run_provider(
+                provider=provider,
+                prompt=prompt,
+            )
+            for provider in self._cut_prompt_provider
+        ]
+
+        result = await asyncio.gather(*pending_tasks)
+
+        return [
+            {
+                "state": state,
+                "provider": provider,
+                "response": response,
+            }
+            for state, provider, response in result
+        ]
