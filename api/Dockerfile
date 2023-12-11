@@ -47,4 +47,5 @@ COPY . .
 EXPOSE 5000
 
 # Run the application.
-CMD uvicorn api_server:app --reload --port 5000 --host 0.0.0.0
+# CMD uvicorn api_server:app --reload --port 5000 --host 0.0.0.0
+CMD uvicorn api_server:app --port 5000 --host 0.0.0.0
