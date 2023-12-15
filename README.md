@@ -5,8 +5,19 @@
 ## Description
 Using the fastAPI to build it 
 
+---
+# Download 
+
+**Zip** : [here](https://github.com/KeithLin724/Book-To-Comics/zipball/main)
+
+**git**:  `git clone https://github.com/KeithLin724/Book-To-Comics.git`
+
+
+---
 
 ### How to use
+install [Docker](https://www.docker.com/) and [Docker-compose](https://docs.docker.com/compose/)
+
 ```sh
 # first cd to api
 cd api
@@ -20,7 +31,7 @@ docker-compose up -d
 # check the log 
 docker-compose logs -f
 
-# check the api_server log ctrl+c exit
+# check the api_server log, ctrl+c exit
 docker logs -f api_server_1
 
 # close 
