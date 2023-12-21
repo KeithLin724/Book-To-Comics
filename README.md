@@ -83,3 +83,12 @@ You need to make a`./chat/src/.env`
 SERVER_IP={your_server_ip}
 SERVER_PORT=5000
 ```
+---
+## Firewall
+You need to allow 
+|port|function|
+|-|-|
+|5000|main API|
+|6379|redis Database|
+|8001|redis Database Webpage Monitor|
+|4080|Text-to-image API|
