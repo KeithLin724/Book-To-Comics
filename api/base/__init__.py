@@ -7,11 +7,12 @@ from func import api_json
 import logging
 from func import helper
 
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
-REDIS_CONNECT = Redis(host=os.getenv("SERVER_IP"), port=6379)
+# REDIS_CONNECT = Redis(host=os.getenv("SERVER_IP"), port=6379)
+REDIS_CONNECT = Redis(host="redis", port=6379)
 TASK_IMAGE_QUEUE = Queue(
     "generate-image-queue",
     connection=REDIS_CONNECT,
@@ -19,7 +20,8 @@ TASK_IMAGE_QUEUE = Queue(
 )
 
 # SERVER_IP = helper.get_local_ip()
-SERVER_IP = os.getenv("SERVER_IP")
+# SERVER_IP = os.getenv("SERVER_IP")
+SERVER_IP = "localhost"
 SERVER_PORT = 5000
 SERVER_URL = f"http://{SERVER_IP}:{SERVER_PORT}"
 

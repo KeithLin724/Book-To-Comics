@@ -44,12 +44,12 @@ In `api_cuda` folder is a text_to_image server, for provide text to image servic
 
 
 ### Mention
-You need to make a`./api/.env` and `./api_cuda/.env`
-#### Format of `./api/.env`
+You need to make `./api_cuda/.env` file
+<!-- #### Format of `./api/.env`
 ```sh
 SERVER_IP={your_server_ip}
 SERVER_PORT=5000
-```
+``` -->
 
 #### Format of `./api_cuda/.env`
 ```sh
