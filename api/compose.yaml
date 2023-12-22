@@ -16,6 +16,8 @@ services:
       - redis_volume_data:/data
     ports:
       - 6379:6379
+    networks:
+      - my-network
 
   redis_insight:
     image: redislabs/redisinsight:latest
@@ -23,8 +25,11 @@ services:
     restart: always
     ports:
       - 8001:8001
+    networks:
+      - my-network
     volumes:
       - redis_insight_volume_data:/db
+
 
   server:
     runtime: nvidia  # 使用 NVIDIA Container Toolkit
@@ -45,8 +50,8 @@ services:
     environment:
       - NVIDIA_VISIBLE_DEVIVES=all
 
-      - SERVER_IP=${SERVER_IP}
-      - SERVER_PORT=${SERVER_PORT}
+      # - SERVER_IP=${SERVER_IP}
+      # - SERVER_PORT=${SERVER_PORT}
     
   work_listener:
     build:
@@ -59,9 +64,9 @@ services:
     networks:
       - my-network
 
-    environment:
-      - SERVER_IP=${SERVER_IP}
-      - SERVER_PORT=${SERVER_PORT}
+    # environment:
+    #   - SERVER_IP=${SERVER_IP}
+    #   - SERVER_PORT=${SERVER_PORT}
 
   
 volumes:

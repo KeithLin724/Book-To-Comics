@@ -44,12 +44,12 @@ In `api_cuda` folder is a text_to_image server, for provide text to image servic
 
 
 ### Mention
-You need to make a`./api/.env` and `./api_cuda/.env`
-#### Format of `./api/.env`
+You need to make `./api_cuda/.env` file
+<!-- #### Format of `./api/.env`
 ```sh
 SERVER_IP={your_server_ip}
 SERVER_PORT=5000
-```
+``` -->
 
 #### Format of `./api_cuda/.env`
 ```sh
@@ -83,3 +83,12 @@ You need to make a`./chat/src/.env`
 SERVER_IP={your_server_ip}
 SERVER_PORT=5000
 ```
+---
+## Firewall
+You need to allow 
+|port|function|
+|-|-|
+|5000|main API|
+|6379|redis Database|
+|8001|redis Database Webpage Monitor|
+|4080|Text-to-image API|
